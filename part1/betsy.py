@@ -10,7 +10,7 @@
 # Import libraries
 import sys
 
-# Get command line import
+# Get command line imput
 n, current, board, time = [int(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]),int(sys.argv[4])]
 
 # Define possible next moves, successor function
