@@ -26,7 +26,12 @@ def winner(board):
     # Check column, if True, a column has a winning move for the current player
     columnn = max([True if current*n in ("".join([b for b in board[i:n*n:n]])) else False for i in range(n)])
     print columnn
+    
+    columnn = [True if current*n in ("".join([b for b in board[i:n*n:n]])) else False for i in range(n)]
+    print columnn
 
+    columnn = [("".join([b for b in board[i:n*n:n]])) for i in range(n)]
+    print columnn
     
     
     # Check diagonals
