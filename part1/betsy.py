@@ -51,12 +51,18 @@ def moves(board):
     
     # Rotate a column
     for each in getColumns(board, n+3, n):
-        if "." in each:
-            print "each ",list(each)
-            print list(each).pop(each.rindex(".")+1)
+        if "."*n in each:
+            None # nothing to rotate
         else:
-            print "each ",list(each)
-            print list(each).pop(0)
+            print "each0 ",list(each)
+            # print "each1 ",filter(lambda k:"." not in k,list(each))
+            # print "each2 ",list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
+            print "each3 ",["."]*each.count(".") + list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
+
+        #     print list(each).pop(each.rindex(".")+1)
+        # else:
+        #     print "each ",list(each)
+        #     print list(each).pop(0)
         # print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
     # Does not rotate for blank column "......"  but doesnt matter need to figure out how to
     # do the new board from that anyway
