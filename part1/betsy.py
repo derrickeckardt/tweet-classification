@@ -57,7 +57,8 @@ def moves(board):
     # do the new board from that anyway
     
     # Drop a pebble and add new boards
-    [new_boards.append([move, score(move)]) for move in filter(None,[(board[0:n*each.rindex(".") + i] + current + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])]
+    drop_boards = filter(None,[(board[0:n*each.rindex(".") + i] + current + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
+    [new_boards.append([move, score(move)]) for move in drop_boards]
 
     return new_boards
     
