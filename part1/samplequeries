@@ -1,0 +1,1 @@
+time timeout 1m ./betsy.py 3 x ....x..xooxoooxxxo 10
