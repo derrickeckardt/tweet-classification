@@ -14,36 +14,29 @@ import sys
 n, current, board, time = [int(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]),int(sys.argv[4])]
 
 # Utility function to get columns
-# getColumns(board,n,n) # gets winable part of columns
-# getColumns(board,n+3,n) # gets entire column
+# getColumns(board,n,n) gets winable part of columns
+# getColumns(board,n+3,n) gets entire column
 def getColumns(board,m,n):
     return [("".join([b for b in board[i:n*m:n]])) for i in range(n)]
 
 # Utility function to get rows
-# getRows(board,n) # Gets rows from winnable rows only
-# getRows(board,n+3) # gets rows from all rows
+# getRows(board,n) gets rows from winnable rows only
+# getRows(board,n+3) gets rows from all rows
 def getRows(board,m,n):
     return [("".join([b for b in board[i:i+n]])) for i in range(0,n*m,n)]
 
+# Utility function to get diagonals
+# getDiagonals(board,n) gets diagonals for winnable section only.
+def getDiagonals(board,n):
+    return ["".join(board[0:n*n:n+1]),"".join(board[n-1:n*n-1:n-1])]
+
+# See if board has a winning move for current player in rows, columns, and diagonals.
+def winner(board):
+    return True if current * n in getRows(board,n,n) + getColumns(board,n,n) + getDiagonals(board,n) else False    
 
 # Implement heuristic function to determine strength of current player's move
 def score(board):
-    
     return 1
-
-# See if board has a winning move
-def winner(board):
-    # Check row
-    row_win = True if current*n in getRows(board,n,n) else False
-
-    # Check column, if True, a column has a winning move for the current player
-    column_win = True if current*n in getColumns(board,n,n) else False
-
-    # Check diagonals
-    
-    # Just for readability, put this here,  Otherwise, would have combined all three of the above into one return line.
-    return max([row_win,column_win])
-    
 
 # Define possible next moves, successor function
 def moves(board):
