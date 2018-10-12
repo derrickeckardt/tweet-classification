@@ -41,18 +41,29 @@ def score(board):
 # Define possible next moves, successor function
 def moves(board):
     new_boards = []
-    # Drop a pebble
-        # Check if column is full
     
     # Rotate a column
-    column_boards = getColumns(board,n+3,n)
+    for each in getColumns(board,n+3,n):
+        print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
+
+    
+    # Drop a pebble
+    i = 0
+    for each in getColumns(board,n+3,n):
+        print each
+        if "." in each:
+            right_most = each.rindex(".")
+            print each[0:right_most]+current+each[right_most+1:n+3]
+            print right_most
+            print board
+
+# wrong        print board[0:i*n+right_most]+current+ board[i*nright_most+1:len(board)]
+        i += 1    
     
     new_boards.append([])        
     
     return new_boards
     
     
-print winner(board)
+winner(board)
 print moves(board)
-print "12345672".rindex("4")
-print "12345672".rindex("2")
