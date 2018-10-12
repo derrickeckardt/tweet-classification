@@ -34,33 +34,40 @@ def getDiagonals(board,n):
 def winner(board):
     return True if current * n in getRows(board,n,n) + getColumns(board,n,n) + getDiagonals(board,n) else False    
 
+# Todo
 # Implement heuristic function to determine strength of current player's move
 def score(board):
     return 1
 
+# Todo
+# Superfulous function to make board visually print nice
+def pretty_print(board):
+    return board
+
+# Inprogress
 # Define possible next moves, successor function
 def moves(board):
     new_boards = []
     
     # Rotate a column
     for each in getColumns(board,n+3,n):
-        print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
-
+        print "each ",each
+        # print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
+    # Does not rotate for blank column "......"  but doesnt matter need to figure out how to
+    # do the new board from that anyway
     
     # Drop a pebble
     i = 0
     for each in getColumns(board,n+3,n):
-        print each
         if "." in each:
             right_most = each.rindex(".")
-            print each[0:right_most]+current+each[right_most+1:n+3]
-            print right_most
-            print board
-
-# wrong        print board[0:i*n+right_most]+current+ board[i*nright_most+1:len(board)]
+            # print each[0:right_most]+current+each[right_most+1:n+3]
+            # print right_most
+            # print board
+            new_board = board[0:n*right_most+i]+current+ board[n*right_most+i+1:len(board)]
+            new_boards.append([new_board,score(new_board)])
+        # This outputs the new boards correctly,  need to condense code
         i += 1    
-    
-    new_boards.append([])        
     
     return new_boards
     
