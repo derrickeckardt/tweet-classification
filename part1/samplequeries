@@ -1,2 +1,3 @@
 time timeout 1m ./betsy.py 3 x ....x..xooxoooxxxo 10
 time timeout 1m ./betsy.py 3 o .o..x..xooxoooxxxo 10
+time timeout 1m ./betsy.py 3 o .o..x..xo.xo.ox.xo 10  # Blank column

@@ -51,12 +51,18 @@ def moves(board):
     
     # Rotate a column
     for each in getColumns(board, n+3, n):
-        print "each ",each
+        if "." in each:
+            print "each ",list(each)
+            print list(each).pop(each.rindex(".")+1)
+        else:
+            print "each ",list(each)
+            print list(each).pop(0)
         # print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
     # Does not rotate for blank column "......"  but doesnt matter need to figure out how to
     # do the new board from that anyway
     
     # Drop a pebble and add new boards
+    # Originally had this on one line, but it was just ugly to follow.  COuld combine them if I wanted to.
     drop_boards = filter(None,[(board[0:n*each.rindex(".") + i] + current + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
     [new_boards.append([move, score(move)]) for move in drop_boards]
 
