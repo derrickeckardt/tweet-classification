@@ -39,40 +39,48 @@ def winner(board):
 def score(board):
     return 1
 
-# Todo
 # Superfulous function to make board visually print nice
 def pretty_print(board):
-    return board
+    return "".join([board[i*n:i*n+n] + "\n" for i in range(n+3)])
 
-# Inprogress
 # Define possible next moves, successor function
-def moves(board):
+def moves(board,turn):
     new_boards = []
     
     # Rotate a column
-    for each in getColumns(board, n+3, n):
-        if "."*n in each:
+    for each, i in zip(getColumns(board, n+3, n),range(n)):
+        if "."*(n+3) in each:
             None # nothing to rotate
         else:
-            print "each0 ",list(each)
-            # print "each1 ",filter(lambda k:"." not in k,list(each))
-            # print "each2 ",list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
-            print "each3 ",["."]*each.count(".") + list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
+            rotated_column = ["."]*each.count(".") + list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
+            rotated_board = "".join([rotated_column.pop(0) if j in [i+m*n for m in range(n+3)] else list(board)[j] for j in range(n*(n+3))])
+            new_boards.append([rotated_board,score(rotated_board)])
 
-        #     print list(each).pop(each.rindex(".")+1)
-        # else:
-        #     print "each ",list(each)
-        #     print list(each).pop(0)
-        # print each.count(".")*"." + each[each.count("."):n+3][-1] + each[each.count("."):n+3][0:-1]
-    # Does not rotate for blank column "......"  but doesnt matter need to figure out how to
-    # do the new board from that anyway
-    
     # Drop a pebble and add new boards
     # Originally had this on one line, but it was just ugly to follow.  COuld combine them if I wanted to.
-    drop_boards = filter(None,[(board[0:n*each.rindex(".") + i] + current + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
-    [new_boards.append([move, score(move)]) for move in drop_boards]
+    # check to make sure player does not go over alloted number of game pieces.  If over, can't drop pieces.
+    if board.count(turn) < (n*(n+3)/2):
+        drop_boards = filter(None,[(board[0:n*each.rindex(".") + i] + current + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
+        [new_boards.append([move, score(move)]) for move in drop_boards]
 
     return new_boards
+
+# todo
+def alphabetapruning(board):
+    return None
+
+# todo
+def selectBestMove(board):
+    return moves(board,current)[0][0] # Change this once I actually get it running
+
+# todo
+# Putting it all together
+def letsPlay(board):
+    return None
     
 winner(board)
-print moves(board)
+print "current board"
+print pretty_print(board)
+print "\nsuccessor boards"
+for successor, score in moves(board,current):
+    print pretty_print(successor)
