@@ -66,6 +66,10 @@ def moves(board,turn):
     return new_boards
 
 # todo
+def minimax(board):
+    return "Make this move"
+
+# todo
 def alphabetapruning(board):
     return None
 
@@ -73,14 +77,16 @@ def alphabetapruning(board):
 def selectBestMove(board):
     return moves(board,current)[0][0] # Change this once I actually get it running
 
-# todo
-# Putting it all together
-def letsPlay(board):
-    return None
-    
+
 winner(board)
-print "current board"
-print pretty_print(board)
-print "\nsuccessor boards"
-for successor, score in moves(board,current):
-    print pretty_print(successor)
+# print "current board"
+# print pretty_print(board)
+# print "\nsuccessor boards"
+# for successor, score in moves(board,current):
+#     print pretty_print(successor)
+
+# Let's Play!
+# Will keep digging until it has exhausted space, found a winning next move..
+n = 1
+while n > 0:
+    print minimax(board)
