@@ -86,8 +86,8 @@ def moves(board,turn):
 def alphabeta(board, max_m):
 
     def maxValue(board, alpha, beta, current_m):
-        if winner(my_move, not_current):
-            return -float("inf"), my_move
+        if winner(board, not_current):
+            return -float("inf"), board
         if current_m > max_m:
             return score(board), board
         v = -float("inf")
@@ -101,8 +101,8 @@ def alphabeta(board, max_m):
         return v, v_min_board
 
     def minValue(board, alpha, beta, current_m):
-        if winner(my_move, current):
-            return float('inf'), my_move
+        if winner(board, current):
+            return float('inf'), board
         if current_m > max_m:
             return score(board), board
         v = float("inf")
@@ -117,23 +117,29 @@ def alphabeta(board, max_m):
 
     alpha, beta = -float('inf'), float('inf')
 
+    best_move = None
     for my_move in moves(board,current):
-        v, min_board = minValue(my_move,alpha,beta,0)
+        v, min_board = minValue(my_move,alpha,beta,1)
         if v > alpha:
             best_move = my_move
             alpha = v
             # print "current best move: \n", pretty_print(best_move)
             # print "current best score: ", best_score
-    return alpha, best_move
+    print best_move
+    print my_move
+    return alpha, (best_move if best_move != None else my_move )
 
 # Let's Play!
 print "Starting board"
 print pretty_print(board)
-for max_m in range(1,101,2):
+for max_m in range(0,101,1):
     lets_play = alphabeta(board,max_m)
     print max_m
-    print pretty_print(lets_play[1])
     print "score ", lets_play[0]
+    print pretty_print(lets_play[1])
+    if lets_play[0] == -float('inf'):
+        print "I cannot win. You will only need to take "+str(int(max_m/2)+1)+" moves or fewer to beat me.  That makes me sad.  This game doesn't even let me resign.  Here is move to hasten my demise."
+        break
     if lets_play[0] == float('inf'):
-        print "i will win in "+str(int(max_m/2)+1)+" moves or fewer!"
+        print "I only need to take "+str(int(max_m/2)+1)+" moves or fewer to vanguish you!"
         break

@@ -2,3 +2,4 @@ time timeout 1m ./betsy.py 3 x ....x..xooxoooxxxo 10
 time timeout 1m ./betsy.py 3 o .o..x..xooxoooxxxo 10
 time timeout 1m ./betsy.py 3 o .o..x..xo.xo.ox.xo 10  # Blank column
 time timeout 1m ./betsy.py 3 x .o.ooxxxoxxxxxxooo 10  # 9 xs already shouldnt allow another x to play
+time timeout 120s ./betsy.py 3 x ........xooooooxxx 10  # x wins in two moves no matter what
