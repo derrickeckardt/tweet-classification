@@ -44,15 +44,12 @@ def winner(board, turn):
 # showed that the first column is the absolute best position
 # Since this game has similar dynamics, modeled it where it prioritizes placement
 # of pieces towards the center, and then pieces above the cut-off line.
-def score(board, turn):
-    if winner(board, turn):
-        return (float("inf") if turn == current else -float('inf'))
-    else:
-        interim = [ [spot if spot == current else spot if spot == not_current else spot for spot in row] for row in getRows(board,n+3,n)]        
-        interim_2 =[ sum([colValue*rowValue if spot == current else -colValue*rowValue if spot == not_current else 0 for spot, colValue in zip(row, range(0,n))]) for row, rowValue in zip(getRows(board,n+3,n), range(n+3,0,-1))]
-        # print interim
-        # print interim_2
-        return sum(interim_2)
+def score(board):
+    # interim = [ [spot if spot == current else spot if spot == not_current else spot for spot in row] for row in getRows(board,n+3,n)]        
+    interim_2 =[ sum([colValue*rowValue if spot == current else -(colValue*rowValue) if spot == not_current else 0 for spot, colValue in zip(row, range(1,n+1,1))]) for row, rowValue in zip(getRows(board,n+3,n), range(n+3,0,-1))]
+    # print interim
+    # print interim_2
+    return sum(interim_2)
 
 
 # Superfulous function to make board visually print nice
@@ -89,11 +86,14 @@ def moves(board,turn):
 def alphabeta(board, max_m):
 
     def maxValue(board, alpha, beta, current_m):
+        if winner(my_move, not_current):
+            return -float("inf"), my_move
         if current_m > max_m:
-            return score(board, current), board
+            return score(board), board
+        v = -float("inf")
         for each in moves(board,current):
             v_min, v_min_board = minValue(each, alpha,beta,current_m+1) 
-            v = max(-float('inf'),v_min)
+            v = max(v,v_min)
             if v >= beta:
                 return v, v_min_board
             alpha = max(alpha,v)
@@ -101,13 +101,14 @@ def alphabeta(board, max_m):
         return v, v_min_board
 
     def minValue(board, alpha, beta, current_m):
+        if winner(my_move, current):
+            return float('inf'), my_move
         if current_m > max_m:
-            return score(board, current), board
-        # Initially thought i would need the board scored at htis point, but don't
-        # think i do, so i may be able to scrap that in the future
+            return score(board), board
+        v = float("inf")
         for each in moves(board,not_current):
             v_max, v_max_board = maxValue(each, alpha,beta,current_m+1) 
-            v = min(float('inf'),v_max)
+            v = min(v,v_max)
             if v <= alpha:
                 return v, v_max_board
             beta = min(beta,v)
@@ -117,28 +118,22 @@ def alphabeta(board, max_m):
     alpha, beta = -float('inf'), float('inf')
 
     for my_move in moves(board,current):
-        v, min_board = minValue(my_move,alpha,beta,1)
+        v, min_board = minValue(my_move,alpha,beta,0)
         if v > alpha:
             best_move = my_move
-            best_score = v
-            print "current best move: \n", pretty_print(best_move)
-            print "current best score: ", best_score
-    return best_move, best_score
-
-
-
-
-# print "current board"
-# print pretty_print(board)
-# print "\nsuccessor boards"
-# for successor, score in moves(board,current):
-#     print pretty_print(successor)
+            alpha = v
+            # print "current best move: \n", pretty_print(best_move)
+            # print "current best score: ", best_score
+    return alpha, best_move
 
 # Let's Play!
 print "Starting board"
 print pretty_print(board)
-for max_m in range(1,4,2):
+for max_m in range(1,101,2):
     lets_play = alphabeta(board,max_m)
-    print pretty_print(lets_play[0])
-    print "score ", lets_play[1]
-    # if lets_play == float('inf'): break
+    print max_m
+    print pretty_print(lets_play[1])
+    print "score ", lets_play[0]
+    if lets_play[0] == float('inf'):
+        print "i will win in "+str(int(max_m/2)+1)+" moves or fewer!"
+        break
