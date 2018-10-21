@@ -9,6 +9,7 @@
 
 # Import libraries
 import sys
+import profile # For speed optimization.
 
 # Get command line input
 n, current, board, time = [int(sys.argv[1]), str(sys.argv[2]).lower(), str(sys.argv[3]), int(sys.argv[4])]
@@ -36,12 +37,17 @@ def winner(board, turn):
     return True if turn * n in getRows(board, n, n) + getColumns(board, n, n) + getDiagonals(board, n) else False
 
 # Todo
+# A good heurisitc hear would value position and potential moves.  it would also be good at
+# anticipating when someone else will win, and value it low enough it can get pruned
+# early to save computing resources.
 # Implement heuristic function to determine strength of current player's move,
 # to be used when terminal states cannot be found
 # This heurisitc is based on connect four and tic-tac-toe strategy
 # In tic-tac-toe, the center box is the most value place, as we saw in lecture
 # I used the following Connect 4 simulator, to build up some intuition, and it
-# showed that the first column is the absolute best position
+# showed that the first column is the absolute best position for the first six moves
+# of the game.  As you move away from the center, the moves become worse.
+# http://connect4.gamesolver.org/?pos=34
 # Since this game has similar dynamics, modeled it where it prioritizes placement
 # of pieces towards the center, and then pieces above the cut-off line.
 # so it has two parts. the center column is the most valuable (middle two if n is
@@ -49,6 +55,16 @@ def winner(board, turn):
 #in terms of rows, the top row is the most valuable, given a value of n, and it loses value as it goes down to right above the cut-off line
 # after the cut-off line, the three rows are always valued as 1,2,3
 # to get the spot's score, they are multiplied by each other.
+# this is a very simple scoring algorithm.  it only prefers moves that result with more pieces in the the higher value positions.  check out a heat map of the area.
+
+# This article talks about the general strategy for connect four, about expert play
+# https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games
+# and this goes into indepth connect4 strategy
+# http://www.pomakis.com/c4/expert_play.html
+# A heuristic algorithm would be much much more detailed and anticipate different
+# scenarios better for valuing.
+
+
 def score(board):
     
     def spotValue(colValue, rowValue):
@@ -129,12 +145,10 @@ def alphabeta(board, max_m):
     #    print "finished MinValue loop"
         return v, v_max_board
 
-    alpha, beta = -float('inf'), float('inf')
-
-    best_move = None
-    best_move_descriptor = 0
+    alpha, beta, best_move, best_move_descriptor = -float('inf'), float('inf'), None, 0
     for my_move, my_move_desciptor in moves(board,current):
         v, min_board = minValue(my_move,alpha,beta,1)
+        # (best_move, best_move_descriptor, alpha) = (my_move, my_move_desciptor, v) if v > alpha else best_move, best_move_descriptor, alpha
         if v > alpha:
             best_move = my_move
             best_move_descriptor = my_move_desciptor
@@ -146,7 +160,10 @@ def alphabeta(board, max_m):
 # Let's Play!
 # print "Starting board"
 # print pretty_print(board)
-for max_m in range(0,101,2):
+
+profile.run("alphabeta(board,8)")
+
+for max_m in range(0,10,2):
     lets_play = alphabeta(board,max_m)
     # print max_m
     # print "score ", lets_play[0]
