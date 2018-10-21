@@ -77,13 +77,13 @@ def moves(board,turn):
         else:
             rotated_column = ["."]*each.count(".") + list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
             rotated_board = "".join([rotated_column.pop(0) if j in [i+m*n for m in range(n+3)] else list(board)[j] for j in range(n*(n+3))])
-            new_boards.append(rotated_board)
+            new_boards.append([rotated_board,-(i+1)])
 
     # Drop a pebble and add new boards
     # check to make sure player does not go over alloted number of game pieces.  If over, can't drop pieces.
     if board.count(turn) < (n*(n+3)/2):
         # Originally had this on one line, but it was just ugly to follow.  COuld combine them if I wanted to.
-        drop_boards = filter(None,[(board[0:n*each.rindex(".") + i] + turn + board[n*each.rindex(".") + i + 1:len(board)]) if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
+        drop_boards = filter(None,[[(board[0:n*each.rindex(".") + i] + turn + board[n*each.rindex(".") + i + 1:len(board)]),i+1] if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
         [new_boards.append(move) for move in drop_boards]
 
     return new_boards
@@ -103,7 +103,7 @@ def alphabeta(board, max_m):
         if current_m > max_m:
             return score(board), board
         v = -float("inf")
-        for each in moves(board,current):
+        for each, move_descriptor in moves(board,current):
             v_min, v_min_board = minValue(each, alpha,beta,current_m+1) 
             v = max(v,v_min)
             if v >= beta:
@@ -120,7 +120,7 @@ def alphabeta(board, max_m):
         if current_m > max_m:
             return score(board), board
         v = float("inf")
-        for each in moves(board,not_current):
+        for each, move_descriptor in moves(board,not_current):
             v_max, v_max_board = maxValue(each, alpha,beta,current_m+1) 
             v = min(v,v_max)
             if v <= alpha:
@@ -132,26 +132,32 @@ def alphabeta(board, max_m):
     alpha, beta = -float('inf'), float('inf')
 
     best_move = None
-    for my_move in moves(board,current):
+    best_move_descriptor = 0
+    for my_move, my_move_desciptor in moves(board,current):
         v, min_board = minValue(my_move,alpha,beta,1)
         if v > alpha:
             best_move = my_move
+            best_move_descriptor = my_move_desciptor
             alpha = v
             # print "current best move: \n", pretty_print(best_move)
             # print "current best score: ", best_score
-    return alpha, (best_move if best_move != None else my_move )
+    return alpha, (best_move if best_move != None else my_move ), best_move_descriptor if best_move_descriptor !=0 else my_move_desciptor
 
 # Let's Play!
-print "Starting board"
-print pretty_print(board)
+# print "Starting board"
+# print pretty_print(board)
 for max_m in range(0,101,2):
     lets_play = alphabeta(board,max_m)
-    print max_m
-    print "score ", lets_play[0]
-    print pretty_print(lets_play[1])
+    # print max_m
+    # print "score ", lets_play[0]
+    # print "descriptor", lets_play[2]
+    # print pretty_print(lets_play[1])
     if lets_play[0] == -float('inf'):
         print "I cannot win. You will only need to take "+str(int(max_m/2)+1)+" moves or fewer to beat me.  That makes me sad.  This game doesn't even let me resign.  Here is a move, please make it a swift execution."
+        print str(lets_play[2])+ " "+lets_play[1]
         break
     if lets_play[0] == float('inf'):
         print "I only need to take "+str(int(max_m/2)+1)+" moves or fewer to vanguish you!"
+        print str(lets_play[2])+ " "+lets_play[1]
         break
+    print str(lets_play[2])+ " "+lets_play[1]
