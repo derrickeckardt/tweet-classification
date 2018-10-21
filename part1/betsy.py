@@ -44,9 +44,19 @@ def winner(board, turn):
 # showed that the first column is the absolute best position
 # Since this game has similar dynamics, modeled it where it prioritizes placement
 # of pieces towards the center, and then pieces above the cut-off line.
+# so it has two parts. the center column is the most valuable (middle two if n is
+# is even) and the edges are the least event, and it fans out from there.
+#in terms of rows, the top row is the most valuable, given a value of n, and it loses value as it goes down to right above the cut-off line
+# after the cut-off line, the three rows are always valued as 1,2,3
+# to get the spot's score, they are multiplied by each other.
 def score(board):
+    
+    def spotValue(colValue, rowValue):
+        col = (n+1.0)/2.0-abs(colValue-(n+1.0)/2)
+        row = n-rowValue if rowValue < n else rowValue-3
+        return col*row
     # interim = [ [spot if spot == current else spot if spot == not_current else spot for spot in row] for row in getRows(board,n+3,n)]        
-    interim_2 =[ sum([colValue*rowValue if spot == current else -(colValue*rowValue) if spot == not_current else 0 for spot, colValue in zip(row, range(1,n+1,1))]) for row, rowValue in zip(getRows(board,n+3,n), range(n+3,0,-1))]
+    interim_2 =[ sum([spotValue(colValue,rowValue) if spot == current else -spotValue(colValue,rowValue) if spot == not_current else 0 for spot, colValue in zip(row, range(1,n+1))]) for row, rowValue in zip(getRows(board,n+3,n), range(1,n+4))]
     # print interim
     # print interim_2
     return sum(interim_2)
@@ -88,6 +98,8 @@ def alphabeta(board, max_m):
     def maxValue(board, alpha, beta, current_m):
         if winner(board, not_current):
             return -float("inf"), board
+        if winner(board, current):
+            return float('inf'), board
         if current_m > max_m:
             return score(board), board
         v = -float("inf")
@@ -103,6 +115,8 @@ def alphabeta(board, max_m):
     def minValue(board, alpha, beta, current_m):
         if winner(board, current):
             return float('inf'), board
+        if winner(board, not_current):
+            return -float('inf'),board
         if current_m > max_m:
             return score(board), board
         v = float("inf")
@@ -125,20 +139,18 @@ def alphabeta(board, max_m):
             alpha = v
             # print "current best move: \n", pretty_print(best_move)
             # print "current best score: ", best_score
-    print best_move
-    print my_move
     return alpha, (best_move if best_move != None else my_move )
 
 # Let's Play!
 print "Starting board"
 print pretty_print(board)
-for max_m in range(0,101,1):
+for max_m in range(0,101,2):
     lets_play = alphabeta(board,max_m)
     print max_m
     print "score ", lets_play[0]
     print pretty_print(lets_play[1])
     if lets_play[0] == -float('inf'):
-        print "I cannot win. You will only need to take "+str(int(max_m/2)+1)+" moves or fewer to beat me.  That makes me sad.  This game doesn't even let me resign.  Here is move to hasten my demise."
+        print "I cannot win. You will only need to take "+str(int(max_m/2)+1)+" moves or fewer to beat me.  That makes me sad.  This game doesn't even let me resign.  Here is a move, please make it a swift execution."
         break
     if lets_play[0] == float('inf'):
         print "I only need to take "+str(int(max_m/2)+1)+" moves or fewer to vanguish you!"
