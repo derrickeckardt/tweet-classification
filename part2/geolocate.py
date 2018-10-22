@@ -10,18 +10,52 @@
 # import libraries
 import sys
 import pandas as pd
+from collections import Counter
 
 training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
 
 # open import file
 training_data, testing_data =[], []
+training_locations, items = [],[]
+training_dict = {}
 with open(testing_file, 'r') as file:
     for line in file:
         testing_data.append([ str(i) for i in line.split() ])
 
+
 with open(training_file, 'r') as file:
     for line in file:
-        training_data.append([ str(i) for i in line.split() ])
+        # Loads as list of lists of lists
+        if any(line.split()[0] == city[0] for city in training_data):
+            print training_data[training_data.index(line.split()[0])]
+            test = [line.split()[0], training_data[training_data.index(line.split()[0])][1]+[ str(i) for i in line.split()[1:] ]]
+        else:
+            training_data.append([line.split()[0], [str(i) for i in line.split()[1:]]])
+
+        print len(training_data)
+        print training_data
+        # Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
+        # almost two minutes to do so.  not erribly efficient
+        # if line.split()[0] in training_dict.keys():
+        #     training_dict[line.split()[0]]['tweet_count'] += 1
+        # else:
+        #     training_dict[line.split()[0]] = {}
+        #     training_dict[line.split()[0]]['tweet_count'] = 1
+        # for token in line.split()[1:]:
+        #     # print token
+        #     if token in training_dict[line.split()[0]].keys():
+        #         training_dict[line.split()[0]][token] += 1
+        #     else:
+        #         training_dict[line.split()[0]][token] = 1
+
+for i in range(5):
+    print len(training_data[i])," ",training_data[i]
+
+# print training_dict['Boston,_MA']['tweet_count']
+# print training_dict['Boston,_MA']['Boston']
+# print len(training_data)
+# print len(testing_data)
+
 
 # Get unique locations and unique words
 # Generate look-up tables for each word.
@@ -44,10 +78,6 @@ with open(training_file, 'r') as file:
 # print len(locations)
 # print len(tokens)
 
-# for i in range(5):
-#     print len(training_data[i])," ",training_data[i]
-# print len(training_data)
-# print len(testing_data)
 
 # Filter out stop words
 # may be best to do it during file-read in
