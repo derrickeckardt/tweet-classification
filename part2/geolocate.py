@@ -13,6 +13,7 @@ import pandas as pd
 from collections import Counter
 from operator import itemgetter
 import string
+from copy import deepcopy
 
 training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
 # open import file
@@ -33,7 +34,7 @@ def filter_token(token):
     # token = token.translate(None, string.punctuation)
     # doing it with that method got rid of hashtags and @ symbols, which are actually very
     # useful.  Performance dropped from 58.0 to 43.0 by filtering all punctuation
-    token = token.replace("!","") #.replace("(","").replace(")","")
+    token = token.replace("!","").replace("_","") #.replace("@","").replace("-","").replace("_","").replace("#hiring","") #.replace("(","").replace(")","")
     # Got up to 59.4 percent getting rid of exclamations points only    
     
     # filter out stopwords
@@ -75,6 +76,7 @@ while len(training_data) > len(training_locations):
 # lookup in dictionary.
 for city, terms in training_data:
     training_dict[city] = Counter(terms)
+    print city, " ",Counter(terms).most_common(5)
     training_dict[city]["total_token_count"] = float(len(terms))
 
 def predict_tweet(training_dict, training_locations, testing_data):
@@ -88,7 +90,9 @@ def predict_tweet(training_dict, training_locations, testing_data):
             # score each city
             for i, city in enumerate(training_locations):
                 # Tried it where it just kept the highest value only, but that only get me 28% accuracy
-                city_score_results[i][1] += training_dict[city][token] / token_occurances if training_dict[city][token] and token_occurances > 0 else 0
+                # also tried filtering by low frequency words, and any number above 0 resulted in a decrease in performance
+                # low frequency words appear to be strong indicators of a tweet's location
+                city_score_results[i][1] += training_dict[city][token] / token_occurances if training_dict[city][token] and token_occurances > 10 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
         # print 
         # print tweet_city
@@ -100,6 +104,18 @@ def predict_tweet(training_dict, training_locations, testing_data):
     print "That's equal to ",round(correct/float(len(testing_data))*100,2),"%"
         
 predict_tweet(training_dict, training_locations, testing_data)
+
+training_counts = deepcopy(training_data)
+
+while len(training_counts) > 1:
+    training_counts[0][1].extend(training_counts[1][1])
+    training_counts.remove(training_counts[1])
+
+training_counts_dict = Counter(training_counts[0][1])
+#print training_counts_dict
+
+
+# Find
         
 # for i in range(5):
 #     print len(training_data[i])," ",training_data[i]
