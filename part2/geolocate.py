@@ -34,7 +34,7 @@ def filter_token(token):
     # token = token.translate(None, string.punctuation)
     # doing it with that method got rid of hashtags and @ symbols, which are actually very
     # useful.  Performance dropped from 58.0 to 43.0 by filtering all punctuation
-    token = token.replace("!","").replace("_","") #.replace("@","").replace("-","").replace("_","").replace("#hiring","") #.replace("(","").replace(")","")
+    token = token.replace("!","").replace("_","")#.replace(".","").replace("@","").replace("-","").replace("_","").replace("#hiring","").replace("(","").replace(")","").replace("#","")
     # Got up to 59.4 percent getting rid of exclamations points only    
     
     # filter out stopwords
@@ -64,41 +64,66 @@ training_data= sorted(training_data, key=itemgetter(0))
 
 # Add like cities until there is only one list for each list.  The zero element
 # is the city name and the second element is all the tokens.
+# Also using this loop to find city with most tweets, and that will be used as the default if the score is
+# 0 (ie, the test tweet uses words not in the training data).  otherwise, it would use
+# either the first city in training locatons or the alphabetical list.
+most_tweets = ["",0] # city, total
+city_tweets_counter = 0
 i=0
 while len(training_data) > len(training_locations):
     if training_data[i][0] == training_data[i+1][0]:
         training_data[i][1].extend(training_data[i+1][1])
         training_data.remove(training_data[i+1])
+        city_tweets_counter += 1
     else:
         i += 1
+        if city_tweets_counter > most_tweets[1]:
+            most_tweets = [training_data[i][0], city_tweets_counter+1]
+        city_tweets_counter = 0
+
+print most_tweets
+            
 
 # Now time to analysis, create easy lookup of each term, by creating summary
 # lookup in dictionary.
 for city, terms in training_data:
     training_dict[city] = Counter(terms)
-    print city, " ",Counter(terms).most_common(5)
+    # print city, " ",Counter(terms).most_common(5)
     training_dict[city]["total_token_count"] = float(len(terms))
+    
+
+    
 
 def predict_tweet(training_dict, training_locations, testing_data):
     correct = 0
     for tweet_city, tweet_tokens in testing_data:
         # score each token
         city_score_results = [[city,0] for city in training_locations]
+        predicted_city = most_tweets[0]
         for token in tweet_tokens:
             # Get the number of times that word appears in total.
-            token_occurances = sum([training_dict[city][token] if training_dict[city][token] else 0 for city in training_locations])
+            # originally i had a check for if training_dict[city][token] else 0 
+            # in reading the python documentation, discovered that Counter dictionaries return 0 and not errors when something isn't there
+            # which is a nice little feature of the program.  since those were
+            # extra operations, I removed them.  this speed up the program negliably though
+            # if training_dict[city][token] else 0 removed from below
+            token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
                 # Tried it where it just kept the highest value only, but that only get me 28% accuracy
                 # also tried filtering by low frequency words, and any number above 0 resulted in a decrease in performance
                 # low frequency words appear to be strong indicators of a tweet's location
-                city_score_results[i][1] += training_dict[city][token] / token_occurances if training_dict[city][token] and token_occurances > 10 else 0
+                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 0 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
         # print 
         # print tweet_city
         # check if predicted properly
         # print tweet_city," ", city_score_results[0][0]
-        if tweet_city == city_score_results[0][0]:
+        # print city_score_results[0][0], " ",city_score_results[0][1]
+        print city_score_results[0][0]
+        predicted_city ==  city_score_results[0][0] if city_score_results[0][1] > float(0) else predicted_city
+        print predicted_city
+        if tweet_city == predicted_city:
             correct += 1
     print "You successfully classified ",correct," of ",len(testing_data)," tweets."
     print "That's equal to ",round(correct/float(len(testing_data))*100,2),"%"
