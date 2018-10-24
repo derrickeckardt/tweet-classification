@@ -75,11 +75,15 @@ def score(board):
     interim_2 =[ sum([spotValue(colValue,rowValue) if spot == current else -spotValue(colValue,rowValue) if spot == not_current else 0 for spot, colValue in zip(row, range(1,n+1))]) for row, rowValue in zip(getRows(board,n+3,n), range(1,n+4))]
     
     # favors boards that have 4 in a row or a diagonal, if disfavors if opponent has them.
-    for each in getRows(board,n,n)+getDiagonals(board,n):
+    for each in getRows(board,n,n)+getDiagonals(board,n)+getColumns(board,n,n):
         if each.count(current) >= n-1:
             interim_2 += 2 * n * n
+        elif each.count(current) >= n-2:
+            interim_2 += n*n
         if each.count(not_current) >= n-1:
             interim_2 += -2 * n * n
+        elif each.count(current) >= n-2:
+            interim_2 += n*n
 
     # print interim
     # print interim_2
