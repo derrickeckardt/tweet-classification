@@ -77,13 +77,17 @@ def score(board):
     # favors boards that have 4 in a row or a diagonal, if disfavors if opponent has them.
     for each in getRows(board,n,n)+getDiagonals(board,n)+getColumns(board,n,n):
         if each.count(current) >= n-1:
-            interim_2 += 2 * n * n
+            value_to_extend = 2*n*n
+            interim_2.extend([value_to_extend])
         elif each.count(current) >= n-2:
-            interim_2 += n*n
+            value_to_extend = n*n
+            interim_2.extend([value_to_extend])
         if each.count(not_current) >= n-1:
-            interim_2 += -2 * n * n
-        elif each.count(current) >= n-2:
-            interim_2 += n*n
+            value_to_extend = 2*n*n
+            interim_2.extend([value_to_extend])
+        elif each.count(not_current) >= n-2:
+            value_to_extend = n*n
+            interim_2.extend([value_to_extend])
 
     # print interim
     # print interim_2
