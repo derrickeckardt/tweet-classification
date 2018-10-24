@@ -161,7 +161,7 @@ def alphabeta(board, max_m):
 # print "Starting board"
 # print pretty_print(board)
 
-profile.run("alphabeta(board,8)")
+# profile.run("alphabeta(board,8)")
 
 for max_m in range(0,10,2):
     lets_play = alphabeta(board,max_m)
