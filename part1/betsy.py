@@ -79,7 +79,7 @@ def score(board):
         if each.count(current) >= n-1:
             interim_2 += 2 * n * n
         if each.count(not_current) >= n-1:
-            interim_2 -= 2 * n * n
+            interim_2 += -2 * n * n
 
     # print interim
     # print interim_2
