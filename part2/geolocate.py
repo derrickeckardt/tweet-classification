@@ -14,6 +14,7 @@ from collections import Counter
 from operator import itemgetter
 import string
 from copy import deepcopy
+from re import sub
 
 training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
 # open import file
@@ -34,11 +35,14 @@ def filter_token(token):
     # token = token.translate(None, string.punctuation)
     # doing it with that method got rid of hashtags and @ symbols, which are actually very
     # useful.  Performance dropped from 58.0 to 43.0 by filtering all punctuation
-    token = token.replace("!","").replace("_","")#.replace(".","").replace("@","").replace("-","").replace("_","").replace("#hiring","").replace("(","").replace(")","").replace("#","")
+    # token = sub("[_!.@-()#]","",token)
+    token = "".join([char for char in token if char not in "_!.@-()#'" ])
+    # token = token.replace("_","").replace("!","").replace(".","").replace("@","").replace("-","").replace("(","").replace(")","").replace("#","")#.replace("#hiring","")
     # Got up to 59.4 percent getting rid of exclamations points only    
     
     # filter out stopwords
     # stopwords taken from NLTK list of 128 stop words
+    # improved performance from 62.6 to 64.8
     # https://pythonprogramming.net/stop-words-nltk-tutorial/
     stop_words = ['ourselves', 'hers', 'between', 'yourself', 'but', 'again', 'there', 'about', 'once', 'during', 'out', 'very', 'having', 'with', 'they', 'own', 'an', 'be', 'some', 'for', 'do', 'its', 'yours', 'such', 'into', 'of', 'most', 'itself', 'other', 'off', 'is', 's', 'am', 'or', 'who', 'as', 'from', 'him', 'each', 'the', 'themselves', 'until', 'below', 'are', 'we', 'these', 'your', 'his', 'through', 'don', 'nor', 'me', 'were', 'her', 'more', 'himself', 'this', 'down', 'should', 'our', 'their', 'while', 'above', 'both', 'up', 'to', 'ours', 'had', 'she', 'all', 'no', 'when', 'at', 'any', 'before', 'them', 'same', 'and', 'been', 'have', 'in', 'will', 'on', 'does', 'yourselves', 'then', 'that', 'because', 'what', 'over', 'why', 'so', 'can', 'did', 'not', 'now', 'under', 'he', 'you', 'herself', 'has', 'just', 'where', 'too', 'only', 'myself', 'which', 'those', 'i', 'after', 'few', 'whom', 't', 'being', 'if', 'theirs', 'my', 'against', 'a', 'by', 'doing', 'it', 'how', 'further', 'was', 'here', 'than']
     if token in set(stop_words):
@@ -67,6 +71,7 @@ training_data= sorted(training_data, key=itemgetter(0))
 # Also using this loop to find city with most tweets, and that will be used as the default if the score is
 # 0 (ie, the test tweet uses words not in the training data).  otherwise, it would use
 # either the first city in training locatons or the alphabetical list.
+# this change boosted predicability to over 65!
 most_tweets = ["",0] # city, total
 city_tweets_counter = 0
 i=0
@@ -81,7 +86,7 @@ while len(training_data) > len(training_locations):
             most_tweets = [training_data[i][0], city_tweets_counter+1]
         city_tweets_counter = 0
 
-print most_tweets
+# print most_tweets
             
 
 # Now time to analysis, create easy lookup of each term, by creating summary
@@ -99,7 +104,7 @@ def predict_tweet(training_dict, training_locations, testing_data):
     for tweet_city, tweet_tokens in testing_data:
         # score each token
         city_score_results = [[city,0] for city in training_locations]
-        predicted_city = most_tweets[0]
+        # predicted_city = most_tweets[0]
         for token in tweet_tokens:
             # Get the number of times that word appears in total.
             # originally i had a check for if training_dict[city][token] else 0 
@@ -120,9 +125,7 @@ def predict_tweet(training_dict, training_locations, testing_data):
         # check if predicted properly
         # print tweet_city," ", city_score_results[0][0]
         # print city_score_results[0][0], " ",city_score_results[0][1]
-        print city_score_results[0][0]
-        predicted_city ==  city_score_results[0][0] if city_score_results[0][1] > float(0) else predicted_city
-        print predicted_city
+        predicted_city =  city_score_results[0][0] #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
             correct += 1
     print "You successfully classified ",correct," of ",len(testing_data)," tweets."
