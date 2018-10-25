@@ -88,11 +88,11 @@ def score(board):
     for each in getColumns(board,n+3,n):
         if current*n in (each+each).replace(".",""):
             interim_2.extend([2*n*n])
-        elif current*n in (each+each).replace(".","") and (each+each).count(".") > 0:
+        elif current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
             interim_2.extend([n*n])
         if not_current*n in each+each:
             interim_2.extend([-2*n*n])
-        elif not_current*n in (each+each).replace(".","") and (each+each).count(".") > 0:
+        elif not_current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
             interim_2.extend([n*n])
             
     # print interim
