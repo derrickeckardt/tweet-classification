@@ -41,23 +41,23 @@ TBD
 
 It quickly became evident that how the data was read into the program significantly impacted the run time on the program.  I considered two main ways to read the information in: Lists and Dictionaries.
 
-    '''python
-    with open(training_file, 'r') as file:
-        for line in file:
-            Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
-            almost two minutes to do so.  not terribly efficient
-            if line.split()[0] in training_dict.keys():
-                training_dict[line.split()[0]]['tweet_count'] += 1
+```python
+with open(training_file, 'r') as file:
+    for line in file:
+        Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
+        almost two minutes to do so.  not terribly efficient
+        if line.split()[0] in training_dict.keys():
+            training_dict[line.split()[0]]['tweet_count'] += 1
+        else:
+            training_dict[line.split()[0]] = {}
+            training_dict[line.split()[0]]['tweet_count'] = 1
+        for token in line.split()[1:]:
+            # print token
+            if token in training_dict[line.split()[0]].keys():
+                training_dict[line.split()[0]][token] += 1
             else:
-                training_dict[line.split()[0]] = {}
-                training_dict[line.split()[0]]['tweet_count'] = 1
-            for token in line.split()[1:]:
-                # print token
-                if token in training_dict[line.split()[0]].keys():
-                    training_dict[line.split()[0]][token] += 1
-                else:
-                    training_dict[line.split()[0]][token] = 1
-    '''
+                training_dict[line.split()[0]][token] = 1
+```
 
 Dictionaries offered the benefit that as information was being added, it could also be used to calculate the absolute counts, which would be used to calculate the probabilities.
 
