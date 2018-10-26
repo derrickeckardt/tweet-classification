@@ -29,7 +29,7 @@ def filter_token(token):
     token = token.lower()
 
     # filter out punctuation.
-    token = "".join([char for char in token if char not in "_!.-()@#'" ]).replace("hiring","").replace("job","")
+    token = "".join([char for char in token if char not in "_!.,\"*:-()&#'" ]).replace("hiring","").replace("job","")
 
     # filter out stopwords, stopwords taken from NLTK list of 128 stop words
     # https://pythonprogramming.net/stop-words-nltk-tutorial/
@@ -96,16 +96,17 @@ def predict_tweet(training_dict, training_locations, testing_data):
         for token in tweet_tokens:
             # Get the number of times that word appears in total.
             # originally i had a check for if training_dict[city][token] else 0 
-            # in reading the python documentation, discovered that Counter dictionaries return 0 and not errors when something isn't there
+            # in reading the python documentation, discovered that Counter 
+            # dictionaries return 0 and not errors when something isn't there
             # which is a nice little feature of the program.  since those were
             # extra operations, I removed them.  this speed up the program negliably though
             # if training_dict[city][token] else 0 removed from below
             token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
-                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 0 else 0
+                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 19 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
-        predicted_city =  city_score_results[0][0] # if city_score_results[0][1] > float(0) else predicted_city
+        predicted_city =  city_score_results[0][0]  #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
             correct += 1
     print "You successfully classified ",correct," of ",len(testing_data)," tweets."
@@ -113,6 +114,7 @@ def predict_tweet(training_dict, training_locations, testing_data):
         
 predict_tweet(training_dict, training_locations, testing_data)
 
+# Deepcopying training data so I can use it for total counts easily.
 training_counts = deepcopy(training_data)
 
 while len(training_counts) > 1:
@@ -120,59 +122,9 @@ while len(training_counts) > 1:
     training_counts.remove(training_counts[1])
 
 training_counts_dict = Counter(training_counts[0][1])
-#print training_counts_dict
 
 
-# Find
-        
-# for i in range(5):
-#     print len(training_data[i])," ",training_data[i]
-
-# print training_dict['Boston,_MA']['tweet_count']
-# print training_dict['Boston,_MA']['Boston']
-# print len(training_data)
-# print len(testing_data)
-
-
-
-
-# Filter out stop words
-# may be best to do it during file-read in
-
-# Generate look-up tables:
-
-
-
-
-#########################
-# Unused or old code
-# For use when loading code in 
-
-# print training_dict['Boston,_MA']['tweet_count']
-# print training_dict['Boston,_MA']['Boston']
-
-
-#Below not needed - just calculate it on the fly for each new tweet, instead of doing a lot of calculations that aren't needed.
-
-# import pandas as pd
-
-# Get unique locations and unique words
-# Generate look-up tables for each word.
-# frequency_table = pd.DataFrame({'token':[]})
-# print frequency_table
-# Originally I was planning to build a frequency table by counting all the cities
-# and all of the words
-# now, i think I rather just generate those on the fly, perhaps
-# locations = []
-# tokens = []
-# for tweet in training_data[0:10000]:
-#     locations = list(set(locations) | set([tweet[0]]))
-#     tokens = list(set(tokens) | set(tweet[1:]))
-#     # if tweet[0] not in locations
-#     #     locations.append(tweet[0])
-#     # for token in tweet[1:]:
-#     #     if token not in tokens:
-#     #         tokens.append(token)
-# print locations
-# print len(locations)
-# print len(tokens)
+# for each in training_locations:
+#     for word in training_counts_dict:
+#         print word
+#     # print training_counts_dict['Boston,_MA']

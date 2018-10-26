@@ -79,19 +79,27 @@ First, I made everything lowercase.  This allows 'Chicago' to be the same as 'ch
 
 Next, my I really struggled with finding a happy step, because the next issue is a common problem.  Data scientists can get themselves into trouble by creating a model that works particularly well for a given dataset, and does not necessarily work well for other similar datasets.  This is called overfitting.  This became an issue for me in determining what noise to filter out, and what noise to leave in.  Ultimately, I went with the major ones that I could see in the common terms, which were:
 
-    _!.-()@#'
+    _!.,"*:-()&#'
 
-Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.6% to 66.2%  When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 66.8%.  Are these two 0.6% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset?   Those are small margins.  Should I have left in the behavior to default to the most popular city since that might be a better design decision, but not good in practice? Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
+Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.8% to 66.6% when i removed the #.  When I removed @ it fell 0.2%  So, I kept that in for now. When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 67.6%.  Are these less than 1% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset?   Those are small margins.  Should I have left in the behavior to default to the most popular city since that might be a better design decision, but not good in practice? Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
 
-Lastly, once my code was filtered to the tokens I wanted, I got rid of all of the "stop words."  These are high frequency words in the English language that mean almost nothing in terms of substantive meaning (the, he, she, etc).  It is common to filter these out with natural language processing.  I got my 128 stop words from the Natural Language Toolkit (NLTK), which is a popular library for natural language processing.  You can find by clicking [NLTK stop words](ttps://pythonprogramming.net/stop-words-nltk-tutorial/).  When I removed the stop words capability, my accuracy dropped to 62.6% from the 66.8%.  While before I was concerned about overfitting, I'm fairly certain filtering stop words almost always makes sense. 
+Lastly, once my code was filtered to the tokens I wanted, I got rid of all of the "stop words."  These are high frequency words in the English language that mean almost nothing in terms of substantive meaning (the, he, she, etc).  It is common to filter these out with natural language processing.  I got my 128 stop words from the Natural Language Toolkit (NLTK), which is a popular library for natural language processing.  You can find by clicking [NLTK stop words](ttps://pythonprogramming.net/stop-words-nltk-tutorial/).  When I removed the stop words capability, my accuracy dropped to 62.6% from the 67.6%.  While before I was concerned about overfitting, I'm fairly certain filtering stop words almost always makes sense. 
 
 A general comment to make here is also that there were many different ways to perform the filtering.  Some are more "pythonic" than ours.  With tens of thousands of tokens, I went for the ones that seemed the fast.  I currently use join() to perform.  I also looked into [using the string library to filter punctuation](https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python).  I also looked at daisychaining .replace() functions, but that took too long.
 
 ## How Important are the Words?
 
-One of the things that was most interesting for me, was to see how much individual words mattered.  As it turns out, the rarer words were, the more important they were.  I tested this out by requiring that a word appear at least two times in order for it to contribute to the scoring of a tweet.  The result was my accuracy went down to 64.2%.  When I required three occurances, it dropped further to 63.2%.  When I required five occurances, it dropped to 62.0%.  At ten occurances, accuracy fell to 60.8%.  That is strong evidence that the rarely used words are actually good predictors.
+One of the things that was most interesting for me, was to see how much individual words mattered.  As it turns out, the rarer words were, the more important they were.  I tested this out by requiring that a word appear at least two times in order for it to contribute to the scoring of a tweet.  The result was my accuracy went down to 64.8%.  When I required three occurances, it dropped further to 63.4%.  When I required ten occurances, it dropped to 61.6%.  At twenty occurances, accuracy fell to 60.8%.  That is strong evidence that the rarely used words are actually good predictors.
 
 I also experimented briefly instead of scoring each individual word and then summing them together, I would only use the score for the most important token in the tweet.  The accuracy for that was around 28%, and did not merit further exploration at that time.
+
+## Most Important Words
+
+The assignment also says that we should rank the top 5 words for each city.  Since I just saw that low frequency words are relevant, we can't simply use their P(L|W) values, since many of those would be 1.
+
+The way I decided to define 'top' words is by only including words that appear at least 10 times, and had to appear on one city's list for at least 80% of those times.
+
+When I did that, I ended up with just the following amount of total words.
 
 ## Opportunities for Improvement
 
