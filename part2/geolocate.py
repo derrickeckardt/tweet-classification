@@ -104,7 +104,7 @@ def predict_tweet(training_dict, training_locations, testing_data):
             token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
-                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 19 else 0
+                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 0 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
         predicted_city =  city_score_results[0][0]  #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
@@ -125,6 +125,22 @@ training_counts_dict = Counter(training_counts[0][1])
 
 
 # for each in training_locations:
-#     for word in training_counts_dict:
-#         print word
-#     # print training_counts_dict['Boston,_MA']
+
+# for word, i in enumerate(training_counts_dict):
+#     print word
+
+# manually found that the first 4000 terms have a low value of 7 and 3000 terms
+# have a low value of 10.  To be sure, just pulled 4000 terms and can filter
+# out those with fewer than 10.
+topwords = []
+threshold = 0.80
+for token, count in training_counts_dict.most_common(4000):
+    if count >= 10:
+        for city in training_locations:
+            if training_dict[city][token] / float(count) > threshold:
+                topwords.extend([[city,token,training_dict[city][token]/float(count)]])
+
+print topwords[0:10]                
+print len(topwords)
+# print training_counts_dict['Boston,_MA']
+# print list(training_counts_dict)

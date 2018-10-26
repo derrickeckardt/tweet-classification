@@ -12,7 +12,7 @@ As directed in the assignment, to run this program type the following at the com
     
 To run the data in the folder, you would specifically run:
 
-    ./gelocate.py tweets.train.clean.txt tweets.test1.clean.txt output.txt                    
+    ./geolocate.py tweets.train.clean.txt tweets.test1.clean.txt output.txt                    
 It takes approximately four seconds to run on the Silo server.
 
 For a more details on the required set-up, please see the [Assignment 2 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
