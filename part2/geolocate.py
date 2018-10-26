@@ -23,19 +23,13 @@ from collections import Counter
 from operator import itemgetter
 from copy import deepcopy
 
-training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
-# open import file
-training_data, testing_data =[], []
-training_locations = []
-training_dict = {}
-
 # function to clean up tokens as they go through
 def filter_token(token):
     # changing everything to lower case as it comes in.
     token = token.lower()
 
     # filter out punctuation.
-    token = "".join([char for char in token if char not in "_!.-()@#'" ])#.replace("hiring","").replace("job","")
+    token = "".join([char for char in token if char not in "_!.-()@#'" ]).replace("hiring","").replace("job","")
 
     # filter out stopwords, stopwords taken from NLTK list of 128 stop words
     # https://pythonprogramming.net/stop-words-nltk-tutorial/
@@ -45,10 +39,16 @@ def filter_token(token):
 
     return token
 
+# import command line inputs
+training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
+
+# open imported file
+training_data, testing_data =[], []
+training_locations, training_dict = [], {}
+
 with open(testing_file, 'r') as file:
     for line in file:
         testing_data.extend([[line.split()[0], filter(None,[filter_token(str(i)) for i in line.split()[1:]])]])
-    # print testing_data[0:20]
 
 
 with open(training_file, 'r') as file:
@@ -61,11 +61,10 @@ with open(training_file, 'r') as file:
 training_data= sorted(training_data, key=itemgetter(0))
 
 # Add like cities until there is only one list for each list.  The zero element
-# is the city name and the second element is all the tokens.
+# is the city name and the 'first' element is all the tokens.
 # Also using this loop to find city with most tweets, and that will be used as the default if the score is
 # 0 (ie, the test tweet uses words not in the training data).  otherwise, it would use
 # either the first city in training locatons or the alphabetical list.
-# this change boosted predicability to over 65!
 most_tweets = ["",0] # city, total
 city_tweets_counter = 0
 i=0
@@ -80,9 +79,6 @@ while len(training_data) > len(training_locations):
             most_tweets = [training_data[i][0], city_tweets_counter+1]
         city_tweets_counter = 0
 
-# print most_tweets
-            
-
 # Now time to analysis, create easy lookup of each term, by creating summary
 # lookup in dictionary.
 for city, terms in training_data:
@@ -90,9 +86,7 @@ for city, terms in training_data:
     # print city, " ",Counter(terms).most_common(5)
     training_dict[city]["total_token_count"] = float(len(terms))
     
-
-    
-
+# Let's predict some tweets
 def predict_tweet(training_dict, training_locations, testing_data):
     correct = 0
     for tweet_city, tweet_tokens in testing_data:
@@ -109,17 +103,9 @@ def predict_tweet(training_dict, training_locations, testing_data):
             token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
-                # Tried it where it just kept the highest value only, but that only get me 28% accuracy
-                # also tried filtering by low frequency words, and any number above 0 resulted in a decrease in performance
-                # low frequency words appear to be strong indicators of a tweet's location
                 city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 0 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
-        # print 
-        # print tweet_city
-        # check if predicted properly
-        # print tweet_city," ", city_score_results[0][0]
-        # print city_score_results[0][0], " ",city_score_results[0][1]
-        predicted_city =  city_score_results[0][0] #if city_score_results[0][1] > float(0) else predicted_city
+        predicted_city =  city_score_results[0][0] # if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
             correct += 1
     print "You successfully classified ",correct," of ",len(testing_data)," tweets."

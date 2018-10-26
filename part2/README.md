@@ -39,13 +39,15 @@ TBD
 
 ## Reading in the data
 
-It quickly became evident that how the data was read into the program significantly impacted the run time on the program.  I considered two main ways to read the information in: Lists and Dictionaries.
+It quickly became evident that how the data was read into the program significantly impacted the run time on the program.  I considered two main ways to read the information in: Lists and Dictionaries.  (I also briefly looked at a pandas dataframe, and it quickly showed to not provide any additional benefit for this data handling.)
+
+Dictionaries offered the benefit that as information was being added, it could also be used to calculate the absolute counts, which would be used to calculate the probabilities.  Below is the code that reads the information right into a dictionary, and then I would then easily be able to get word counts for each token.
 
 ```python
 with open(training_file, 'r') as file:
     for line in file:
-        Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
-        almost two minutes to do so.  not terribly efficient
+        # Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
+        # almost two minutes to do so.  not terribly efficient
         if line.split()[0] in training_dict.keys():
             training_dict[line.split()[0]]['tweet_count'] += 1
         else:
@@ -59,9 +61,13 @@ with open(training_file, 'r') as file:
                 training_dict[line.split()[0]][token] = 1
 ```
 
-Dictionaries offered the benefit that as information was being added, it could also be used to calculate the absolute counts, which would be used to calculate the probabilities.
+So, had this worked quickly, it would have been nice since it basically gives me all of my counts right away. As noted in the comments within the above code lock, it took two minutes to just perform that part.  On the class discussion, we focused on lists.  It was pointed out by Prof. Crandall that using .extend() is significantly more efficent than .append() for lists.  In doing this, this part of the program took about two seconds to run. 
 
-I also briefly looked at a pandas dataframe, and it seemed to be additional work for no additional performance payoff.
+I end up with a list that has all of the tweets as their own item (training\_data).  I also get a list of every city in the dataset (training\_locations).  While I could have hardcoded manually since I knew the twelve cities, I thought it best to work with any similar dataset that could have more or fewer cities.  Then, I sorted the training\_data by tweet city, found the most popular tweet city, and then combined like cities into just 12 lists, one for each city.
+
+Once I had all of my tweets into those twelve lists within training\_data, I used Counter from collections to create a dictionary that did the counts.  Basically, I got the benefit of the dictionary, while compiling the information through lists.  The other nice thing about Counter i discovered in the [Counter documentation](https://docs.python.org/2/library/collections.html) is that if you ask for a term in the Counter dictionary that is not there, it returns 0 instead of a KeyError.  This is tremendously helpful in the event that test data has a token that is not found in the training data, which often happens.
+
+By the way, I found the most popular city so that it would be set as the default city in the event that a tweet has a score of 0 (meaning, it has words never seen in the training\_data.)  Later on in my code, you will see that I have actually commented that functionality out.  The reason?  It actually slightly decreased performance.  Since, the tweets are fairly well distributed, it didn't quite matter what the default was.  For different datasets, it might matter, so that is why I left it in so it could be easily turned on.  This does lead nicely into my next point--overfitting.
 
 ## Filtering the Input - To (over)Fit or Not to (over)Fit
 
@@ -75,11 +81,17 @@ Next, my I really struggled with finding a happy step, because the next issue is
 
     _!.-()@#'
 
-Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.6% to 66.2%  When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 66.8%.  Are these two 0.6% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset.   Those are small margins. Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
+Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.6% to 66.2%  When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 66.8%.  Are these two 0.6% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset?   Those are small margins.  Should I have left in the behavior to default to the most popular city since that might be a better design decision, but not good in practice? Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
 
 Lastly, once my code was filtered to the tokens I wanted, I got rid of all of the "stop words."  These are high frequency words in the English language that mean almost nothing in terms of substantive meaning (the, he, she, etc).  It is common to filter these out with natural language processing.  I got my 128 stop words from the Natural Language Toolkit (NLTK), which is a popular library for natural language processing.  You can find by clicking [NLTK stop words](ttps://pythonprogramming.net/stop-words-nltk-tutorial/).  When I removed the stop words capability, my accuracy dropped to 62.6% from the 66.8%.  While before I was concerned about overfitting, I'm fairly certain filtering stop words almost always makes sense. 
 
 A general comment to make here is also that there were many different ways to perform the filtering.  Some are more "pythonic" than ours.  With tens of thousands of tokens, I went for the ones that seemed the fast.  I currently use join() to perform.  I also looked into [using the string library to filter punctuation](https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python).  I also looked at daisychaining .replace() functions, but that took too long.
+
+## How Important are the Words?
+
+One of the things that was most interesting for me, was to see how much individual words mattered.  As it turns out, the rarer words were, the more important they were.  I tested this out by requiring that a word appear at least two times in order for it to contribute to the scoring of a tweet.  The result was my accuracy went down to 64.2%.  When I required three occurances, it dropped further to 63.2%.  When I required five occurances, it dropped to 62.0%.  At ten occurances, accuracy fell to 60.8%.  That is strong evidence that the rarely used words are actually good predictors.
+
+I also experimented briefly instead of scoring each individual word and then summing them together, I would only use the score for the most important token in the tweet.  The accuracy for that was around 28%, and did not merit further exploration at that time.
 
 ## Opportunities for Improvement
 
