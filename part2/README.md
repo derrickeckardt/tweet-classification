@@ -37,14 +37,19 @@ In general, think of this as a search problem.
 
 TBD
 
-## Filtering the Input - To Fit or Not to Fit
+## Filtering the Input - To (over)Fit or Not to (over)Fit
 
 Probably the most important thing in this data set is to make sure to make sure the data that is the most useful
 
-Data scientists can get themselves into trouble by creating a model that works particularly well for a given dataset, and does not necessarily work well for other similar datasets.  This is called overfitting.
+Data scientists can get themselves into trouble by creating a model that works particularly well for a given dataset, and does not necessarily work well for other similar datasets.  This is called overfitting.  This became an issue for me in determining what noise to filter out, and what noise to leave in.  Ultimately, I went with the major ones that I could see in the common terms, which were:
+
+    _!.-()@#'
+
+Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.6% to 66.2%  When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 66.8%.  Are these two 0.6% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset.   Those are small margins. Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
+
+
 In using the data 
 
 ## Opportunities for Improvement
 
-TBD
-
+** Run Experiments to Determine Overfitting** - To settle some of the questions I had about overfitting, it would be helpful in the future to actually have additional datasets.  Another way that is often achieved in Machine Learning is to do multiple "folds" of the training data.  For example, I could do ten folds, each has 10% (3200 datapoints) from the training datasats, where 3200 datapoints are made the testing dataset, and the rest remains in the training set.  I would do this with one model that filters out the # and @ and one that does not.  I would then average the results of each set of those ten runs, and compare the results.  This would give me a much better feel for what punctuation actually mattered.

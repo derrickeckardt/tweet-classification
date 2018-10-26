@@ -32,33 +32,18 @@ training_dict = {}
 # function to clean up tokens as they go through
 def filter_token(token):
     # changing everything to lower case as it comes in.
-    # improved performance from 57.4% to 58.8%
-    # as it likely allows Chicago to equal chicago and increase quantities there
     token = token.lower()
 
-    # From looking at data, punctiation is adding meaning, which will ignore for now, as it changes some words.  'chicago' is different than 'chicago!'
-    # learned how to do that from:
-    # https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
-    # import string
-    # token = token.translate(None, string.punctuation)
-    # doing it with that method got rid of hashtags and @ symbols, which are actually very
-    # useful.  Performance dropped from 58.0 to 43.0 by filtering all punctuation
-    # from re import sub
-    # token = sub("[_!.@-()#]","",token)
-    token = "".join([char for char in token if char not in "_!.-()'" ])#.replace("hiring","").replace("job","")
-    # token = token.replace("_","").replace("!","").replace(".","").replace("@","").replace("-","").replace("(","").replace(")","").replace("#","")#.replace("#hiring","")
-    # Got up to 59.4 percent getting rid of exclamations points only    
-    
-    # filter out stopwords
-    # stopwords taken from NLTK list of 128 stop words
-    # improved performance from 62.6 to 64.8
+    # filter out punctuation.
+    token = "".join([char for char in token if char not in "_!.-()@#'" ])#.replace("hiring","").replace("job","")
+
+    # filter out stopwords, stopwords taken from NLTK list of 128 stop words
     # https://pythonprogramming.net/stop-words-nltk-tutorial/
     stop_words = ['ourselves', 'hers', 'between', 'yourself', 'but', 'again', 'there', 'about', 'once', 'during', 'out', 'very', 'having', 'with', 'they', 'own', 'an', 'be', 'some', 'for', 'do', 'its', 'yours', 'such', 'into', 'of', 'most', 'itself', 'other', 'off', 'is', 's', 'am', 'or', 'who', 'as', 'from', 'him', 'each', 'the', 'themselves', 'until', 'below', 'are', 'we', 'these', 'your', 'his', 'through', 'don', 'nor', 'me', 'were', 'her', 'more', 'himself', 'this', 'down', 'should', 'our', 'their', 'while', 'above', 'both', 'up', 'to', 'ours', 'had', 'she', 'all', 'no', 'when', 'at', 'any', 'before', 'them', 'same', 'and', 'been', 'have', 'in', 'will', 'on', 'does', 'yourselves', 'then', 'that', 'because', 'what', 'over', 'why', 'so', 'can', 'did', 'not', 'now', 'under', 'he', 'you', 'herself', 'has', 'just', 'where', 'too', 'only', 'myself', 'which', 'those', 'i', 'after', 'few', 'whom', 't', 'being', 'if', 'theirs', 'my', 'against', 'a', 'by', 'doing', 'it', 'how', 'further', 'was', 'here', 'than']
     if token in set(stop_words):
         return None
 
     return token
-
 
 with open(testing_file, 'r') as file:
     for line in file:
