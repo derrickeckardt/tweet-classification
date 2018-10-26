@@ -10,7 +10,7 @@ As directed in the assignment, to run this program type the following at the com
 
     ./assign.py [input-file] [k] [m] [n]
 
-For a more details on the set-up, please see the [Assignment 1 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
+For a more details on the required set-up, please see the [Assignment 1 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
 
 ## Summary of Problem
 

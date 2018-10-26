@@ -8,9 +8,14 @@ The assignment prompt can be found at [Assignment 2 Prompt](https://github.iu.ed
 
 As directed in the assignment, to run this program type the following at the command line:
 
-    ./assign.py [input-file] [k] [m] [n]
+    ./geolocate.py [training_tweets_file] [test_tweets_file] [output_file]
+    
+To run the data in the folder, you would specifically run:
 
-For a more details on the set-up, please see the [Assignment 1 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
+    ./gelocate.py tweets.train.clean.txt tweets.test1.clean.txt output.txt                    
+It takes approximately four seconds to run on the Silo server.
+
+For a more details on the required set-up, please see the [Assignment 2 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
 
 ## Summary of Problem
 
@@ -32,6 +37,14 @@ In general, think of this as a search problem.
 
 TBD
 
+## Filtering the Input - To Fit or Not to Fit
+
+Probably the most important thing in this data set is to make sure to make sure the data that is the most useful
+
+Data scientists can get themselves into trouble by creating a model that works particularly well for a given dataset, and does not necessarily work well for other similar datasets.  This is called overfitting.
+In using the data 
+
 ## Opportunities for Improvement
 
 TBD
+

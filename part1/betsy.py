@@ -6,6 +6,17 @@
 #
 # Completed by Derrick Eckardt
 # derrick@iu.edu
+#
+###############################################################################
+###############################################################################
+#
+# A full discussion and details can be found in the Readme file for Part 1, 
+# which is located at:
+# https://github.iu.edu/cs-b551-fa2018/derrick-a2/tree/master/part1
+#
+###############################################################################
+###############################################################################
+
 
 # Import libraries
 import sys

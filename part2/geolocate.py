@@ -6,15 +6,22 @@
 #
 # Completed by Derrick Eckardt
 # derrick@iu.edu
+#
+###############################################################################
+###############################################################################
+#
+# A full discussion and details can be found in the Readme file for Part 2, 
+# which is located at:
+# https://github.iu.edu/cs-b551-fa2018/derrick-a2/tree/master/part2
+#
+###############################################################################
+###############################################################################
 
 # import libraries
 import sys
-import pandas as pd
 from collections import Counter
 from operator import itemgetter
-import string
 from copy import deepcopy
-from re import sub
 
 training_file, testing_file, output_file = [sys.argv[1],sys.argv[2],sys.argv[3]]
 # open import file
@@ -32,11 +39,13 @@ def filter_token(token):
     # From looking at data, punctiation is adding meaning, which will ignore for now, as it changes some words.  'chicago' is different than 'chicago!'
     # learned how to do that from:
     # https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
+    # import string
     # token = token.translate(None, string.punctuation)
     # doing it with that method got rid of hashtags and @ symbols, which are actually very
     # useful.  Performance dropped from 58.0 to 43.0 by filtering all punctuation
+    # from re import sub
     # token = sub("[_!.@-()#]","",token)
-    token = "".join([char for char in token if char not in "_!.@-()#'" ])
+    token = "".join([char for char in token if char not in "_!.-()'" ])#.replace("hiring","").replace("job","")
     # token = token.replace("_","").replace("!","").replace(".","").replace("@","").replace("-","").replace("(","").replace(")","").replace("#","")#.replace("#hiring","")
     # Got up to 59.4 percent getting rid of exclamations points only    
     
@@ -187,6 +196,8 @@ training_counts_dict = Counter(training_counts[0][1])
 
 
 #Below not needed - just calculate it on the fly for each new tweet, instead of doing a lot of calculations that aren't needed.
+
+# import pandas as pd
 
 # Get unique locations and unique words
 # Generate look-up tables for each word.
