@@ -57,7 +57,7 @@ It quickly became evident that how the data was read into the program significan
                     training_dict[line.split()[0]][token] += 1
                 else:
                     training_dict[line.split()[0]][token] = 1
-    '''python
+    '''
 
 Dictionaries offered the benefit that as information was being added, it could also be used to calculate the absolute counts, which would be used to calculate the probabilities.
 
