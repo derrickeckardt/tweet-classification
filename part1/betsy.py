@@ -85,6 +85,7 @@ def score(board):
         elif each.count(not_current) >= n-2:
             interim_2.extend([n*n])
 
+    # Might need to modify it below perhaps
     for each in getColumns(board,n+3,n):
         if current*n in (each+each).replace(".",""):
             interim_2.extend([2*n*n])
