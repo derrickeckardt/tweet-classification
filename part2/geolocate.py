@@ -162,20 +162,6 @@ training_counts_dict = Counter(training_counts[0][1])
 # Unused or old code
 # For use when loading code in 
 
-        # Loads as dictiorary - presorted, takes a lot of time to do so.  it takes
-        # almost two minutes to do so.  not erribly efficient
-        # if line.split()[0] in training_dict.keys():
-        #     training_dict[line.split()[0]]['tweet_count'] += 1
-        # else:
-        #     training_dict[line.split()[0]] = {}
-        #     training_dict[line.split()[0]]['tweet_count'] = 1
-        # for token in line.split()[1:]:
-        #     # print token
-        #     if token in training_dict[line.split()[0]].keys():
-        #         training_dict[line.split()[0]][token] += 1
-        #     else:
-        #         training_dict[line.split()[0]][token] = 1
-
 # print training_dict['Boston,_MA']['tweet_count']
 # print training_dict['Boston,_MA']['Boston']
 
