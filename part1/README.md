@@ -48,37 +48,22 @@ For this program, I implemented the MinMax algorithm with Alphabeta pruning.  Th
 
 ### Heurestic Function
 
-Since the program cannot practically get to all of the leaves given the state space, I use heuristic function to evaluate the strength of a board.  The heuristic function in this case might be best referred to as my game play strategy.  How do I determine which boards are the best.  
+Since the program cannot practically get to all of the leaves given the state space, I use heuristic function to evaluate the strength of a board.  The heuristic function in this case might be best referred to as my game play strategy.  So how do I determine which boards are the best?  I'm not sure, but here is my best guess of what and how I got there.
+
+First, I thought a good heurisitc would value position and the potential for biggers moves.  Also, it would also be to recognize threats from the opponenent.  A strong position for me would be a large positive number, and a bad board for me would be a large negative value.  (values according to some scale I would later set)
+
+Next, I looked at similar games.  We learned in class that tic-tac-toe strategy favors starting in the center square.  Another similar game is Connect Four.  I used this [Connect 4 Solver](http://connect4.gamesolver.org/?pos=34) in order to build up some intuition.  That showed that the center column is the absolute best position for the first six moves of the game since it is involved in the most possible winning outcomes.  Betsy is similarily structured.
+
+So, since Betsy has similar dynamics, the first part of my heurisitc assigned weights to each square on the board.  If it was one my pieces, I added it.  If it was one of my opponents pieces I substracted it.  
+
+I modeled it where it prioritizes placement of pieces towards the center, and then pieces above the cut-off line where you can actually win.  Each spot on the board's score has two compoents a column value (colValue) and a row value (rowValue).  The center column is the most valuable (middle two columns if n is is even) and the edges are the least valuable and it slopes down in between. In terms of rows, the top row is the most valuable, given a value of n, and it loses a value of 1 from each row as it down to right above the cut-off line above the cut-off line.  The three rows bottom are always valued as 1,2, and3.   to get the spot's score, they are multiplied by each other. This is a very simple scoring algorithm.  it only prefers moves that result with more pieces in the the higher value positions.  check out a map of values for a board of n equal to 3.
+
+![alt text](https://github. "n=3 board values")
 
 
+Now, the algorithm needed to account for strength of future moves.  In other moves, boards that not only have high value points, but also have possible winning outcomes.  More [Connect 4 Strategy](https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games) and [Expert Connect 4 Strategy](http://www.pomakis.com/c4/expert_play.html) went into great depth.  While not a one-to-one analogy, it drove home the importance of positions that lead to multiple different ways to win.
 
-A good heurisitc hear would value position and potential moves.  it would also be good at
-anticipating when someone else will win, and value it low enough it can get pruned
-early to save computing resources.
-Implement heuristic function to determine strength of current player's move,
-to be used when terminal states cannot be found
-This heurisitc is based on connect four and tic-tac-toe strategy
-In tic-tac-toe, the center box is the most value place, as we saw in lecture
-I used the following Connect 4 simulator, to build up some intuition, and it
-showed that the first column is the absolute best position for the first six moves
-of the game.  As you move away from the center, the moves become worse.
-http://connect4.gamesolver.org/?pos=34
-Since this game has similar dynamics, modeled it where it prioritizes placement
-of pieces towards the center, and then pieces above the cut-off line.
-so it has two parts. the center column is the most valuable (middle two if n is
-is even) and the edges are the least event, and it fans out from there.
-in terms of rows, the top row is the most valuable, given a value of n, and it loses value as it goes down to right above the cut-off line
-after the cut-off line, the three rows are always valued as 1,2,3
-to get the spot's score, they are multiplied by each other.
-this is a very simple scoring algorithm.  it only prefers moves that result with more pieces in the the higher value positions.  check out a heat map of the area.
-
-This article talks about the general strategy for connect four, about expert play
-https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games
-and this goes into indepth connect4 strategy
-http://www.pomakis.com/c4/expert_play.html
-A heuristic algorithm would be much much more detailed and anticipate different
-scenarios better for valuing.
-
+The way I implemented that part of the heuristic
 
 
 
