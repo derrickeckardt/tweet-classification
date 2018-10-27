@@ -15,3 +15,7 @@ A full discussion and details can be found in the Readme file for Part 1, which 
 ## Part 2: Tweet Classification
 
 A full discussion and details can be found in the Readme file for Part 2, which is located at [Part 2 Readme File](https://github.iu.edu/cs-b551-fa2018/derrick-a2/tree/master/part2)
+
+## Extra Credit
+
+I did not attempt it on this project.  If it possible, I would like to submit it at a future date.  Please let me know if that's a possibility.
