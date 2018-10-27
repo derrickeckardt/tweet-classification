@@ -47,35 +47,8 @@ def getDiagonals(board, n):
 def winner(board, turn):
     return True if turn * n in getRows(board, n, n) + getColumns(board, n, n) + getDiagonals(board, n) else False
 
-# Todo
-# A good heurisitc hear would value position and potential moves.  it would also be good at
-# anticipating when someone else will win, and value it low enough it can get pruned
-# early to save computing resources.
-# Implement heuristic function to determine strength of current player's move,
-# to be used when terminal states cannot be found
-# This heurisitc is based on connect four and tic-tac-toe strategy
-# In tic-tac-toe, the center box is the most value place, as we saw in lecture
-# I used the following Connect 4 simulator, to build up some intuition, and it
-# showed that the first column is the absolute best position for the first six moves
-# of the game.  As you move away from the center, the moves become worse.
-# http://connect4.gamesolver.org/?pos=34
-# Since this game has similar dynamics, modeled it where it prioritizes placement
-# of pieces towards the center, and then pieces above the cut-off line.
-# so it has two parts. the center column is the most valuable (middle two if n is
-# is even) and the edges are the least event, and it fans out from there.
-#in terms of rows, the top row is the most valuable, given a value of n, and it loses value as it goes down to right above the cut-off line
-# after the cut-off line, the three rows are always valued as 1,2,3
-# to get the spot's score, they are multiplied by each other.
-# this is a very simple scoring algorithm.  it only prefers moves that result with more pieces in the the higher value positions.  check out a heat map of the area.
 
-# This article talks about the general strategy for connect four, about expert play
-# https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games
-# and this goes into indepth connect4 strategy
-# http://www.pomakis.com/c4/expert_play.html
-# A heuristic algorithm would be much much more detailed and anticipate different
-# scenarios better for valuing.
-
-
+# Heuristic Function
 def score(board):
     
     def spotValue(colValue, rowValue):
@@ -100,13 +73,9 @@ def score(board):
     for each in getColumns(board,n+3,n):
         if current*n in (each+each).replace(".",""):
             interim_2.extend([2*n*n])
-        elif current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
-            interim_2.extend([n*n])
-        if not_current*n in each+each:
+        if not_current*n in each+each.replace(".",""):
             interim_2.extend([-2*n*n])
-        elif not_current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
-            interim_2.extend([-n*n])
-            
+
     # print interim
     # print interim_2
     return sum(interim_2)
