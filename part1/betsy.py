@@ -132,7 +132,6 @@ def alphabeta(board, max_m):
             if v >= beta:
                 return v, v_min_board
             alpha = max(alpha,v)
-        "Finished maxValue loop"
         return v, v_min_board
 
     def minValue(board, alpha, beta, current_m):
@@ -149,7 +148,6 @@ def alphabeta(board, max_m):
             if v <= alpha:
                 return v, v_max_board
             beta = min(beta,v)
-    #    print "finished MinValue loop"
         return v, v_max_board
 
     alpha, beta, best_move, best_move_descriptor = -float('inf'), float('inf'), None, 0

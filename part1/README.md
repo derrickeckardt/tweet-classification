@@ -22,9 +22,9 @@ Or a move later in the game might look like:
 
 For a more details on the required set-up and game set-up, please see the [Assignment 2 Prompt](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/a2.pdf)
 
-## Summary of Problem
+## Summary of Problem and Discussion of Approach
 
-In general, think of this as a search problem.
+In general, think of this as a search problem.  I'm searching for the best moves that get me to a win the fastest, assuming my opponent plays perfectly.  What will make the most difference is my strategy (my heurisitc).
 
 ### Initial State
 
@@ -62,16 +62,18 @@ I modeled it where it prioritizes placement of pieces towards the center, and th
 
 Now, the algorithm needed to account for strength of future moves.  In other moves, boards that not only have high value points, but also have possible winning outcomes.  More [Connect 4 Strategy](https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games) and [Expert Connect 4 Strategy](http://www.pomakis.com/c4/expert_play.html) went into great depth.  While not a one-to-one analogy, it drove home the importance of positions that lead to multiple different ways to win.
 
-Since, the board can change fairly easily via rotations, the way I implemented that part of the heuristic was to recognize rows, diagonals, and/or columns that had the potential to win, by having enough pieces in those lines.  Then, I added or subtracted values of either 2n<sup>2</sup> or just n<sup>2</sup> to my board score.  This would cause the number to move significantly based on the strength of the future wins.
+Since, the board can change fairly easily via rotations, the way I implemented that part of the heuristic was to recognize rows, diagonals, and/or columns that had the potential to win by having enough pieces in those lines.  Then, I added or subtracted values of either 2n<sup>2</sup> or just n<sup>2</sup> to my board score.  This would cause the number to move significantly based on the strength of the future wins.
 
 I thought about hard-coding some things into it such as, if you see four in a row, immediately block it.  However, that may cause me to actually miss opportunities to win sooner, and that is actually a suboptimal move. This is where confidence in the heurisitc is necessary.
 
-## Discussion of Approach
+## Does it work?
 
-TBD
+Well, yes it does.  My Betsy bot has played several matches against other players.  It seems to make good moves.  She does not miss too many obvious good moves, and seems to know the right times to play defense.  With that said, I have watched as Betsy was only a couple of moves away from a win, and just did not make the necessary moves to win.  I'm probably not going to win the Western Pennsylvania Betsy world championship, though.
 
 ## Opportunities for Improvement
 
 **More in-depth strategy** - This heurisitc function only scratches the surfaces as to what can be done.  It evaluates strength of position, and the possibility of future wins.  Since this game is relatively new to me, I'm sure more games would reveal some basic strategy, edge cases, or other ways to think about playing the game and completely rewrite the heurisitc.
 
-**Refactor code** - This might be the best code I have written.  Some of the functions are single lines, which make me happy.  However, this game is all about speed.  I used the profile library to check the time of the program, and I found that my heurisitc function consumes a significant chunk of the time resources
+**Refactor code** - This might be the best code I have written.  Some of the functions are single lines, which make me happy.  However, this game is all about speed.  I used the profile library to check the time of the program, and I found that my heurisitc function consumes a significant chunk of the time resources.  If I could figure out a way to more efficiently evaluate the board, I might be able to win more matches simply by the ability to look deeper into the board for future winning moves.  Since, thousands of boards are evaluated, some gains in just efficient code could result in an extra level of results.  That could be enough to ensure a win.
+
+**Build a Better Betsy Bot** - Clearly, Betsy can be improved.  How good a player could she be?  Significantly better.  Yesterday (October 25), I came across an article on [how to build my own AlphaZero game playing bot for any game](https://medium.com/applied-data-science/how-to-build-your-own-alphazero-ai-using-python-and-keras-7f664945c188).  This has me really intrigued, because, in reality, AlphaZero would know exactly what I know about Betsy at this point.  This could be a fun side project.  Or, perhaps we'll do this as part of a future assignment. :-)
