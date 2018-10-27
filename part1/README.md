@@ -58,7 +58,7 @@ So, since Betsy has similar dynamics, the first part of my heurisitc assigned we
 
 I modeled it where it prioritizes placement of pieces towards the center, and then pieces above the cut-off line where you can actually win.  Each spot on the board's score has two compoents a column value (colValue) and a row value (rowValue).  The center column is the most valuable (middle two columns if n is is even) and the edges are the least valuable and it slopes down in between. In terms of rows, the top row is the most valuable, given a value of n, and it loses a value of 1 from each row as it down to right above the cut-off line above the cut-off line.  The three rows bottom are always valued as 1,2, and3.   to get the spot's score, they are multiplied by each other. This is a very simple scoring algorithm.  it only prefers moves that result with more pieces in the the higher value positions.  check out a map of values for a board of n equal to 3.
 
-![alt text](https://github. "n=3 board values")
+![alt text](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/part1/n3boardvalues.jpg "n=3 board values")
 
 
 Now, the algorithm needed to account for strength of future moves.  In other moves, boards that not only have high value points, but also have possible winning outcomes.  More [Connect 4 Strategy](https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games) and [Expert Connect 4 Strategy](http://www.pomakis.com/c4/expert_play.html) went into great depth.  While not a one-to-one analogy, it drove home the importance of positions that lead to multiple different ways to win.
