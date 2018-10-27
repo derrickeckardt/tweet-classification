@@ -74,4 +74,4 @@ TBD
 
 **More in-depth strategy** - This heurisitc function only scratches the surfaces as to what can be done.  It evaluates strength of position, and the possibility of future wins.  Since this game is relatively new to me, I'm sure more games would reveal some basically strategy or other ways to think about playing the game and completely rewrite the heurisitc.
 
-**Refactor code** - This might be the best code I have written.  Some of the functions are single lines, which make me happy.  
+**Refactor code** - This might be the best code I have written.  Some of the functions are single lines, which make me happy.  However, this game is all about speed.  I used the profile library to 

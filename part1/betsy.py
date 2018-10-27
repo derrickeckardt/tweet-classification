@@ -69,12 +69,16 @@ def score(board):
         elif each.count(not_current) >= n-2:
             interim_2.extend([n*n])
 
-    # Might need to modify it below perhaps
+    # Might need to modify it further in the future
     for each in getColumns(board,n+3,n):
         if current*n in (each+each).replace(".",""):
             interim_2.extend([2*n*n])
+        elif current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
+            interim_2.extend([n*n])
         if not_current*n in each+each.replace(".",""):
             interim_2.extend([-2*n*n])
+        elif not_current*(n-1) in (each+each).replace(".","") and (each+each).count(".") > 0:
+            interim_2.extend([-n*n])
 
     # print interim
     # print interim_2
@@ -160,12 +164,9 @@ def alphabeta(board, max_m):
             # print "current best score: ", best_score
     return alpha, (best_move if best_move != None else my_move ), best_move_descriptor if best_move_descriptor !=0 else my_move_desciptor
 
+
+
 # Let's Play!
-# print "Starting board"
-# print pretty_print(board)
-
-# profile.run("alphabeta(board,8)")
-
 for max_m in range(0,100,1):
     lets_play = alphabeta(board,max_m)
     # print max_m
@@ -181,3 +182,5 @@ for max_m in range(0,100,1):
         print str(lets_play[2])+ " "+lets_play[1]
         break
     print str(lets_play[2])+ " "+lets_play[1]
+    
+# profile.run("alphabeta(board,8)")
