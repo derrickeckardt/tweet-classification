@@ -60,10 +60,11 @@ I modeled it where it prioritizes placement of pieces towards the center, and th
 
 ![alt text](https://github.iu.edu/cs-b551-fa2018/derrick-a2/blob/master/part1/n3boardvalues.jpg "n=3 board values")
 
-
 Now, the algorithm needed to account for strength of future moves.  In other moves, boards that not only have high value points, but also have possible winning outcomes.  More [Connect 4 Strategy](https://www.quora.com/What-is-the-winning-strategy-for-the-first-player-in-Connect-Four-games) and [Expert Connect 4 Strategy](http://www.pomakis.com/c4/expert_play.html) went into great depth.  While not a one-to-one analogy, it drove home the importance of positions that lead to multiple different ways to win.
 
-The way I implemented that part of the heuristic
+Since, the board can change fairly easily via rotations, the way I implemented that part of the heuristic was to recognize rows, diagonals, and/or columns that had the potential to win, by having enough pieces in those lines.  Then, I added or subtracted values of either 2n<sup>2</sup> or just n<sup>2</sup> to my board score.  This would cause the number to move significantly based on the strength of the future wins.
+
+
 
 
 
@@ -76,5 +77,5 @@ TBD
 
 ## Opportunities for Improvement
 
-TBD
+**More in-depth strategy**
 
