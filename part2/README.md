@@ -75,6 +75,10 @@ Lastly, once my code was filtered to the tokens I wanted, I got rid of all of th
 
 A general comment to make here is also that there were many different ways to perform the filtering.  Some are more "pythonic" than ours.  With tens of thousands of tokens, I went for the ones that seemed the fast.  I currently use join() to perform.  I also looked into [using the string library to filter punctuation](https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python).  I also looked at daisychaining .replace() functions, but that took too long.
 
+## Scoring Each City
+
+This was, for the most part, the most straightforward.  Once I knew the counts for each word overall and then within each location, they just had to be added together.  The highest city score for each tweet 'won'.  This did bring up some experimentation on which words to actually include in the analysis.
+
 ## How Important are the Words?
 
 One of the things that was most interesting for me, was to see how much individual words mattered.  As it turns out, the rarer words were, the more important they were.  I tested this out by requiring that a word appear at least two times in order for it to contribute to the scoring of a tweet.  The result was my accuracy went down to 64.8%.  When I required three occurances, it dropped further to 63.4%.  When I required ten occurances, it dropped to 61.6%.  At twenty occurances, accuracy fell to 60.8%.  That is strong evidence that the rarely used words are actually good predictors.
@@ -124,4 +128,4 @@ Manual inspection of these words seem to make the most sense.  They describe cit
 
 ** Run Experiments to Determine Overfitting** - To settle some of the questions I had about overfitting, it would be helpful in the future to actually have additional datasets.  Another way that is often achieved in Machine Learning is to do multiple "folds" of the training data.  For example, I could do ten folds, each has 10% (3200 datapoints) from the training datasats, where 3200 datapoints are made the testing dataset, and the rest remains in the training set.  I would do this with one model that filters out the # and @ and one that does not.  I would then average the results of each set of those ten runs, and compare the results.  This would give me a much better feel for what punctuation actually mattered.
 
-** Refactor My Code ** - This code is relatively lean, and it benefited from me trying several different ways to do the most important functions.  This allowed me to drive my initial runtime of over two minutes down to four seconds overall.  With that said, there is probably an opportunity to refactor the code even more.
+** Refactor My Code ** - This code is relatively lean, and it benefited from me trying several different ways to do the most important functions.  This allowed me to drive my initial runtime of over two minutes down to four seconds overall.  With that said, there is probably an opportunity to refactor the code even more to get some savings.  However, the time savings would be negliable, since it already runs in four seconds.  It might be worth pursuing if we wanted to do experimentation where we might do dozens or hundreds of runs.

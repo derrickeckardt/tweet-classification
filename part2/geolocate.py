@@ -111,10 +111,9 @@ def predict_tweet(training_dict, training_locations, testing_data, output_file):
             # which is a nice little feature of the program.  since those were
             # extra operations, I removed them.  this speed up the program negliably though
             # if training_dict[city][token] else 0 removed from below
-            token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
-                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if training_counts_dict[token] > 0 else 0
+                city_score_results[i][1] += training_dict[city][token] / float(training_counts_dict[token]) if training_counts_dict[token] > 0 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
         predicted_city =  city_score_results[0][0]  #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
