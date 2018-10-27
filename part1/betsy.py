@@ -65,9 +65,9 @@ def score(board):
         elif each.count(current) >= n-2:
             interim_2.extend([n*n])
         if each.count(not_current) >= n-1:
-            interim_2.extend([2*n*n])
+            interim_2.extend([-2*n*n])
         elif each.count(not_current) >= n-2:
-            interim_2.extend([n*n])
+            interim_2.extend([-n*n])
 
     # Might need to modify it further in the future
     for each in getColumns(board,n+3,n):
@@ -166,6 +166,8 @@ def alphabeta(board, max_m):
 
 
 
+# profile.run("alphabeta(board,8)")
+
 # Let's Play!
 for max_m in range(0,100,1):
     lets_play = alphabeta(board,max_m)
@@ -183,4 +185,3 @@ for max_m in range(0,100,1):
         break
     print str(lets_play[2])+ " "+lets_play[1]
     
-# profile.run("alphabeta(board,8)")
