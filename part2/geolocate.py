@@ -127,8 +127,6 @@ def predict_tweet(training_dict, training_locations, testing_data, output_file):
     
 predict_tweet(training_dict, training_locations, testing_data, output_file)
 
-
-
 # manually found that the first 4000 terms have a low value of 7 and 3000 terms
 # have a low value of 10.  To be sure, I pulled 4000 terms and can filter
 # out those with fewer than 10.
@@ -140,5 +138,5 @@ for city in sorted(training_locations,key=itemgetter(0)):
         if count >= 20:
                 if training_dict[city][token] / float(count) > threshold:
                     topwords.extend([[token,training_dict[city][token]/float(count)]])
-    print city+": ",sorted(topwords,key=itemgetter(1), reverse=True)[0:5]
+    print city +":  "+"".join([word +" "+ str(round(score, 2)) + "   " for word, score in sorted(topwords,key=itemgetter(1), reverse=True)[0:5]])
     topwords =[]
