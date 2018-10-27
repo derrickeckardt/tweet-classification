@@ -85,7 +85,16 @@ for city, terms in training_data:
     training_dict[city] = Counter(terms)
     # print city, " ",Counter(terms).most_common(5)
     training_dict[city]["total_token_count"] = float(len(terms))
-    
+
+# Deepcopying training data so I can use it for total counts easily.
+training_counts = deepcopy(training_data)
+
+while len(training_counts) > 1:
+    training_counts[0][1].extend(training_counts[1][1])
+    training_counts.remove(training_counts[1])
+
+training_counts_dict = Counter(training_counts[0][1])
+
 # Let's predict some tweets and output to file
 def predict_tweet(training_dict, training_locations, testing_data, output_file):
     correct = 0
@@ -105,7 +114,7 @@ def predict_tweet(training_dict, training_locations, testing_data, output_file):
             token_occurances = sum([training_dict[city][token] for city in training_locations])
             # score each city
             for i, city in enumerate(training_locations):
-                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if token_occurances > 0 else 0
+                city_score_results[i][1] += training_dict[city][token] / float(token_occurances) if training_counts_dict[token] > 0 else 0
         city_score_results = sorted(city_score_results,key=itemgetter(1),reverse=True)
         predicted_city =  city_score_results[0][0]  #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
@@ -119,14 +128,6 @@ def predict_tweet(training_dict, training_locations, testing_data, output_file):
     
 predict_tweet(training_dict, training_locations, testing_data, output_file)
 
-# Deepcopying training data so I can use it for total counts easily.
-training_counts = deepcopy(training_data)
-
-while len(training_counts) > 1:
-    training_counts[0][1].extend(training_counts[1][1])
-    training_counts.remove(training_counts[1])
-
-training_counts_dict = Counter(training_counts[0][1])
 
 
 # manually found that the first 4000 terms have a low value of 7 and 3000 terms

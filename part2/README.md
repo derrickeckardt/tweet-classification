@@ -19,19 +19,7 @@ For a more details on the required set-up, please see the [Assignment 2 Prompt](
 
 ## Summary of Problem
 
-In general, think of this as a search problem.
-
-**Initial State:** TBD
-
-**Goal State:** TBD
-
-**State Space:** TBD
-
-**Successor Function:** TBD
-
-**Heurestic Function:** TBD
-
-**Cost Function:** TBD
+This is different than previous problems where we move from one state to another.  We are implement a naive Bayes model of identifying tweets by geolocation.  What is nice about this is with the training data, we are able to create lookup values for how often a particular word (or token) appears for a given location.  We call that P (L =l | w).  Once we read our data in, we know it for all the data.  Then, with test data, we can then see how well our model holds up.
 
 ## Discussion of Approach
 
@@ -132,8 +120,8 @@ The results are as follows (which also print to screen):
 
 Manual inspection of these words seem to make the most sense.  They describe city-specific baseball items (astros, nationals, fenway) or local neighborhoods like La Jolla for San Diego or WoodlandHills for Los Angeles.  Some of the top tags have the city's name.  A value of 1.0 here indicates that word appeared only in that city's tweets, which makes it a very strong indicator for that city.
 
-When I did that, I ended up with just the following amount of total words.
-
 ## Opportunities for Improvement
 
 ** Run Experiments to Determine Overfitting** - To settle some of the questions I had about overfitting, it would be helpful in the future to actually have additional datasets.  Another way that is often achieved in Machine Learning is to do multiple "folds" of the training data.  For example, I could do ten folds, each has 10% (3200 datapoints) from the training datasats, where 3200 datapoints are made the testing dataset, and the rest remains in the training set.  I would do this with one model that filters out the # and @ and one that does not.  I would then average the results of each set of those ten runs, and compare the results.  This would give me a much better feel for what punctuation actually mattered.
+
+** Refactor My Code ** - This code is relatively lean, and it benefited from me trying several different ways to do the most important functions.  This allowed me to drive my initial runtime of over two minutes down to four seconds overall.  With that said, there is probably an opportunity to refactor the code even more.
