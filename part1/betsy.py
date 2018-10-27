@@ -96,14 +96,14 @@ def moves(board,turn):
         else:
             rotated_column = ["."]*each.count(".") + list(filter(lambda k:"." not in k,list(each)).pop()) + filter(lambda k:"." not in k,list(each))[0:-1]
             rotated_board = "".join([rotated_column.pop(0) if j in [i+m*n for m in range(n+3)] else list(board)[j] for j in range(n*(n+3))])
-            new_boards.append([rotated_board,-(i+1)])
+            new_boards.extend([[rotated_board,-(i+1)]])  #append
 
     # Drop a pebble and add new boards
     # check to make sure player does not go over alloted number of game pieces.  If over, can't drop pieces.
     if board.count(turn) < (n*(n+3)/2):
         # Originally had this on one line, but it was just ugly to follow.  COuld combine them if I wanted to.
         drop_boards = filter(None,[[(board[0:n*each.rindex(".") + i] + turn + board[n*each.rindex(".") + i + 1:len(board)]),i+1] if "." in each else None for each, i in zip(getColumns(board, n+3, n), range(0, n))])
-        [new_boards.append(move) for move in drop_boards]
+        [new_boards.extend([move]) for move in drop_boards] #append
 
     return new_boards
 
@@ -166,7 +166,7 @@ def alphabeta(board, max_m):
 
 # profile.run("alphabeta(board,8)")
 
-for max_m in range(0,10,2):
+for max_m in range(0,100,1):
     lets_play = alphabeta(board,max_m)
     # print max_m
     # print "score ", lets_play[0]

@@ -64,12 +64,7 @@ Now, the algorithm needed to account for strength of future moves.  In other mov
 
 Since, the board can change fairly easily via rotations, the way I implemented that part of the heuristic was to recognize rows, diagonals, and/or columns that had the potential to win, by having enough pieces in those lines.  Then, I added or subtracted values of either 2n<sup>2</sup> or just n<sup>2</sup> to my board score.  This would cause the number to move significantly based on the strength of the future wins.
 
-
-
-
-
-
-**Cost Function:** TBD
+I thought about hard-coding some things into it such as, if you see four in a row, immediately block it.  However, that may cause me to actually miss opportunities to win sooner, and that is actually a suboptimal move. This is where confidence in the heurisitc is necessary.
 
 ## Discussion of Approach
 
@@ -77,5 +72,6 @@ TBD
 
 ## Opportunities for Improvement
 
-**More in-depth strategy**
+**More in-depth strategy** - This heurisitc function only scratches the surfaces as to what can be done.  It evaluates strength of position, and the possibility of future wins.  Since this game is relatively new to me, I'm sure more games would reveal some basically strategy or other ways to think about playing the game and completely rewrite the heurisitc.
 
+**Refactor code** - This might be the best code I have written.  Some of the functions are single lines, which make me happy.  
