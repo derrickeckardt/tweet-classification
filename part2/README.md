@@ -35,7 +35,7 @@ In general, think of this as a search problem.
 
 ## Discussion of Approach
 
-TBD
+There were many factors that went into the making of this predictor.  While I ended up with a predicted accuracy of 67.6% for the test data and 91.95% for the training data, there were many decisions that could change those numbers a little or a lot for different, similar datasets.
 
 ## Reading in the data
 
@@ -79,7 +79,7 @@ First, I made everything lowercase.  This allows 'Chicago' to be the same as 'ch
 
 Next, my I really struggled with finding a happy step, because the next issue is a common problem.  Data scientists can get themselves into trouble by creating a model that works particularly well for a given dataset, and does not necessarily work well for other similar datasets.  This is called overfitting.  This became an issue for me in determining what noise to filter out, and what noise to leave in.  Ultimately, I went with the major ones that I could see in the common terms, which were:
 
-    _!.,"*:-()&#'
+    _!.,"*:?-()&#'
 
 Something I should note here, is that within Twitter, # and @ are important symbols with meaning. They are not stray punctiation. Contrary to what I expected, when I included them in the punctiation to filter out, my prediction accuracy actually improved from 65.8% to 66.6% when i removed the #.  When I removed @ it fell 0.2%  So, I kept that in for now. When I removed the words "jobs" and "hiring" since they appeared in almost every dataset, my accuracy then went to 67.6%.  Are these less than 1% improvements true for other datasets?  I do not know.  Or, does that just happen to work for my dataset?   Those are small margins.  Should I have left in the behavior to default to the most popular city since that might be a better design decision, but not good in practice? Ultimately, more experimentation could solve that.  See my discussion under "Opportunities for Improvement" below on how this might be solved.
 
@@ -97,7 +97,40 @@ I also experimented briefly instead of scoring each individual word and then sum
 
 The assignment also says that we should rank the top 5 words for each city.  Since I just saw that low frequency words are relevant, we can't simply use their P(L|W) values, since many of those would be 1.
 
-The way I decided to define 'top' words is by only including words that appear at least 10 times, and had to appear on one city's list for at least 80% of those times.
+The way I decided to define 'top' words is by only including words that appear at least 20 times, and had to appear on one city's list for at least 80% of those times.  This resulted in the following amount of 'top' words for each city:
+
+    Atlanta,_GA   11
+    Boston,_MA   12
+    Chicago,_IL   9
+    Houston,_TX   17
+    Los_Angeles,_CA   38
+    Manhattan,_NY   33
+    Orlando,_FL   24
+    Philadelphia,_PA   6
+    San_Francisco,_CA   6
+    San_Diego,_CA   7
+    Toronto,_Ontario   18
+    Washington,_DC   6
+
+This resulted in a total of 187 'top' words.  While the 10 was somewhat arbitrarily selected, the 80% is just to got the dataset down.  Since we are interested in the top 5, we have enough to get a feel for the top words for this dataset.
+
+The results are as follows (which also print to screen):
+
+    The top 5 words and their frequency in that city compared to the overall usage are as follows:
+    Atlanta,_GA:  [['georgia', 1.0], ['duranduran', 1.0], ['scaa2016', 1.0], ['buckhead', 1.0], ['duran', 1.0]]
+    Boston,_MA:  [['fenway', 1.0], ['dorchester', 1.0], ['massachusetts', 0.9885057471264368], ['onebostonday', 0.9795918367346939], ['boston', 0.9732824427480916]]
+    Chicago,_IL:  [['wrigley', 1.0], ['ohare', 1.0], ['jarvis', 1.0], ['chitown', 1.0], ['chicago', 0.9939320388349514]]
+    Houston,_TX:  [['baths', 1.0], ['astros', 1.0], ['bbva', 1.0], ['i45', 1.0], ['tx', 0.9989669421487604]]
+    Los_Angeles,_CA:  [['dodger', 1.0], ['dtla', 1.0], ['granada', 1.0], ['ucla', 1.0], ['woodlandhills', 1.0]]
+    Manhattan,_NY:  [['nycmissed', 1.0], ['tribeca2016', 1.0], ['tribecafilmfestival', 1.0], ['centralpark', 1.0], ['rockefeller', 1.0]]
+    Orlando,_FL:  [['orlpol', 1.0], ['ocso', 1.0], ['suspiciousperson', 1.0], ['32801', 1.0], ['housebusinesscheck', 1.0]]
+    Philadelphia,_PA:  [['phillies', 1.0], ['philadelphia', 0.9965457685664939], ['pa', 0.979002624671916], ['pennsylvania', 0.9397590361445783], ['philly', 0.9252336448598131]]
+    San_Francisco,_CA:  [['fran', 1.0], ['sanfrancisco', 0.9978540772532188], ['francisco', 0.9890350877192983], ['request', 0.9846153846153847], ['sf', 0.9473684210526315]]
+    San_Diego,_CA:  [['petco', 1.0], ['lajolla', 1.0], ['jolla', 1.0], ['seaworld', 1.0], ['sandiego', 0.991869918699187]]
+    Toronto,_Ontario:  [['b/w', 1.0], ['scarborough', 1.0], ['ud', 1.0], ['highrise', 1.0], ['the6ix', 1.0]]
+    Washington,_DC:  [['washingtondc', 1.0], ['dc', 0.9856230031948882], ['nationals', 0.9523809523809523], ['capitol', 0.9512195121951219], ['washington', 0.9090909090909091]]
+
+Manual inspection of these words seem to make the most sense.  They describe city-specific baseball items (astros, nationals, fenway) or local neighborhoods like La Jolla for San Diego or WoodlandHills for Los Angeles.  Some of the top tags have the city's name.  A value of 1.0 here indicates that word appeared only in that city's tweets, which makes it a very strong indicator for that city.
 
 When I did that, I ended up with just the following amount of total words.
 

@@ -29,7 +29,7 @@ def filter_token(token):
     token = token.lower()
 
     # filter out punctuation.
-    token = "".join([char for char in token if char not in "_!.,\"*:-()&#'" ]).replace("hiring","").replace("job","")
+    token = "".join([char for char in token if char not in "_!.,?\"*:-()&#'" ]).replace("hiring","").replace("job","")
 
     # filter out stopwords, stopwords taken from NLTK list of 128 stop words
     # https://pythonprogramming.net/stop-words-nltk-tutorial/
@@ -48,7 +48,7 @@ training_locations, training_dict = [], {}
 
 with open(testing_file, 'r') as file:
     for line in file:
-        testing_data.extend([[line.split()[0], filter(None,[filter_token(str(i)) for i in line.split()[1:]])]])
+        testing_data.extend([[line.split()[0], filter(None,[filter_token(str(i)) for i in line.split()[1:]]), line]])
 
 
 with open(training_file, 'r') as file:
@@ -86,10 +86,11 @@ for city, terms in training_data:
     # print city, " ",Counter(terms).most_common(5)
     training_dict[city]["total_token_count"] = float(len(terms))
     
-# Let's predict some tweets
-def predict_tweet(training_dict, training_locations, testing_data):
+# Let's predict some tweets and output to file
+def predict_tweet(training_dict, training_locations, testing_data, output_file):
     correct = 0
-    for tweet_city, tweet_tokens in testing_data:
+    results_file = open(output_file,"w+")
+    for tweet_city, tweet_tokens, original_line in testing_data:
         # score each token
         city_score_results = [[city,0] for city in training_locations]
         # predicted_city = most_tweets[0]
@@ -109,10 +110,14 @@ def predict_tweet(training_dict, training_locations, testing_data):
         predicted_city =  city_score_results[0][0]  #if city_score_results[0][1] > float(0) else predicted_city
         if tweet_city == predicted_city:
             correct += 1
+        results_file.write(predicted_city+" "+original_line)
+    results_file.close
     print "You successfully classified ",correct," of ",len(testing_data)," tweets."
     print "That's equal to ",round(correct/float(len(testing_data))*100,2),"%"
-        
-predict_tweet(training_dict, training_locations, testing_data)
+    print "Predicted results and original tweets outputted to file: "+output_file+"\n"
+    
+    
+predict_tweet(training_dict, training_locations, testing_data, output_file)
 
 # Deepcopying training data so I can use it for total counts easily.
 training_counts = deepcopy(training_data)
@@ -124,23 +129,16 @@ while len(training_counts) > 1:
 training_counts_dict = Counter(training_counts[0][1])
 
 
-# for each in training_locations:
-
-# for word, i in enumerate(training_counts_dict):
-#     print word
-
 # manually found that the first 4000 terms have a low value of 7 and 3000 terms
-# have a low value of 10.  To be sure, just pulled 4000 terms and can filter
+# have a low value of 10.  To be sure, I pulled 4000 terms and can filter
 # out those with fewer than 10.
 topwords = []
 threshold = 0.80
-for token, count in training_counts_dict.most_common(4000):
-    if count >= 10:
-        for city in training_locations:
-            if training_dict[city][token] / float(count) > threshold:
-                topwords.extend([[city,token,training_dict[city][token]/float(count)]])
-
-print topwords[0:10]                
-print len(topwords)
-# print training_counts_dict['Boston,_MA']
-# print list(training_counts_dict)
+print "The top 5 words and their frequency in that city compared to the overall usage are as follows:"
+for city in sorted(training_locations,key=itemgetter(0)):
+    for token, count in training_counts_dict.most_common(4000):
+        if count >= 20:
+                if training_dict[city][token] / float(count) > threshold:
+                    topwords.extend([[token,training_dict[city][token]/float(count)]])
+    print city+": ",sorted(topwords,key=itemgetter(1), reverse=True)[0:5]
+    topwords =[]
