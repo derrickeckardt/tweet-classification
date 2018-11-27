@@ -1,0 +1,17 @@
+You successfully classified  13  of  500  tweets.
+That's equal to  2.6 %
+Predicted results and original tweets outputted to file: derrick-a2.out
+
+The top 5 words and their frequency in that city compared to the overall usage are as follows:
+Atlanta,_GA:  georgia 1.0   duranduran 1.0   scaa2016 1.0   buckhead 1.0   duran 1.0   
+Boston,_MA:  fenway 1.0   dorchester 1.0   massachusetts 0.99   onebostonday 0.98   boston 0.97   
+Chicago,_IL:  wrigley 1.0   ohare 1.0   jarvis 1.0   chitown 1.0   chicago 0.99   
+Houston,_TX:  baths 1.0   astros 1.0   bbva 1.0   i45 1.0   tx 1.0   
+Los_Angeles,_CA:  dodger 1.0   dtla 1.0   granada 1.0   ucla 1.0   woodlandhills 1.0   
+Manhattan,_NY:  nycmissed 1.0   tribeca2016 1.0   tribecafilmfestival 1.0   centralpark 1.0   rockefeller 1.0   
+Orlando,_FL:  orlpol 1.0   ocso 1.0   suspiciousperson 1.0   32801 1.0   housebusinesscheck 1.0   
+Philadelphia,_PA:  phillies 1.0   philadelphia 1.0   pa 0.98   pennsylvania 0.94   philly 0.93   
+San_Francisco,_CA:  fran 1.0   sanfrancisco 1.0   francisco 0.99   request 0.98   sf 0.95   
+San_Diego,_CA:  petco 1.0   lajolla 1.0   jolla 1.0   seaworld 1.0   sandiego 0.99   
+Toronto,_Ontario:  b/w 1.0   scarborough 1.0   ud 1.0   highrise 1.0   the6ix 1.0   
+Washington,_DC:  washingtondc 1.0   dc 0.99   nationals 0.95   capitol 0.95   washington 0.91   
